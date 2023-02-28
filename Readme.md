@@ -1,7 +1,7 @@
 # Личный проект «Что посмотреть»
 
-* Студент: [Igor Zorin](https://up.htmlacademy.ru/react/12/user/584557).
-* Наставник: `Неизвестно`.
+- Студент: [Igor Zorin](https://up.htmlacademy.ru/react/12/user/584557).
+- Наставник: [Надежда Комарицкая](https://htmlacademy.ru/profile/id644051).
 
 ---
 
