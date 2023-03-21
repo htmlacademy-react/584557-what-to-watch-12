@@ -1,6 +1,6 @@
-import { TPromoFilm } from '../types/film';
+import { TFilm } from '../types/film';
 
-export const promo: TPromoFilm = {
+export const promo: TFilm = {
   'name': 'Legend',
   'posterImage': 'https://12.react.pages.academy/static/film/poster/Legend.jpg',
   'previewImage': 'https://12.react.pages.academy/static/film/preview/legend.jpg',

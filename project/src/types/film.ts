@@ -19,5 +19,3 @@ export type TFilm = {
 }
 
 export type TFilms = TFilm[];
-
-export type TPromoFilm = TFilm;

@@ -1,10 +1,15 @@
 import { FC } from 'react';
-import FilmCard from '../../components/film-card/film-card';
-import { films } from '../../moks/films';
-import { TPromoFilm } from '../../types/film';
+import { Link, useNavigate } from 'react-router-dom';
+import { FilmsList } from '../../components/films-list/films-list';
+import { Footer } from '../../components/footer/footer';
+import { Header } from '../../components/header/header';
+import { GENRES } from '../../const';
+import { TFilm, TFilms } from '../../types/film';
 
-const Main:FC<{promo: TPromoFilm}> = ({ promo }) => {
-  const { name, genre, released, posterImage, backgroundImage } = promo;
+const Main:FC<{ promo: TFilm; films: TFilms }> = ({ promo, films }) => {
+  const navigate = useNavigate();
+
+  const { name, genre, released, posterImage, backgroundImage, id } = promo;
   return (
     <>
       <section className="film-card">
@@ -17,31 +22,7 @@ const Main:FC<{promo: TPromoFilm}> = ({ promo }) => {
 
         <h1 className="visually-hidden">WTW</h1>
 
-        <header className="page-header film-card__head">
-          <div className="logo">
-            <a className="logo__link">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
-
-          <ul className="user-block">
-            <li className="user-block__item">
-              <div className="user-block__avatar">
-                <img
-                  src="img/avatar.jpg"
-                  alt="User avatar"
-                  width="63"
-                  height="63"
-                />
-              </div>
-            </li>
-            <li className="user-block__item">
-              <a className="user-block__link">Sign out</a>
-            </li>
-          </ul>
-        </header>
+        <Header additionalClassName='film-card__head' />
 
         <div className="film-card__wrap">
           <div className="film-card__info">
@@ -63,6 +44,9 @@ const Main:FC<{promo: TPromoFilm}> = ({ promo }) => {
 
               <div className="film-card__buttons">
                 <button
+                  onClick={() => {
+                    navigate(`player/${id}`);
+                  }}
                   className="btn btn--play film-card__button"
                   type="button"
                 >
@@ -92,65 +76,16 @@ const Main:FC<{promo: TPromoFilm}> = ({ promo }) => {
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
           <ul className="catalog__genres-list">
-            <li className="catalog__genres-item catalog__genres-item--active">
-              <a href="#" className="catalog__genres-link">
-                All genres
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Comedies
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Crime
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Documentary
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Dramas
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Horror
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Kids & Family
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Romance
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Sci-Fi
-              </a>
-            </li>
-            <li className="catalog__genres-item">
-              <a href="#" className="catalog__genres-link">
-                Thrillers
-              </a>
-            </li>
+            {GENRES.map((genresItem, idx) => (
+              <li key={genresItem} className={`catalog__genres-item ${idx === 0 ? 'catalog__genres-item--active' : ''}`}>
+                <Link to="#" className="catalog__genres-link">
+                  {genresItem}
+                </Link>
+              </li>
+            ))}
           </ul>
 
-          <div className="catalog__films-list">
-            {
-              films.map(({ name: filmName, previewImage, id }) => (
-                <FilmCard key={id} name={filmName} previewImage={previewImage}/>
-              ))
-            }
-          </div>
+          <FilmsList films={films}/>
 
           <div className="catalog__more">
             <button className="catalog__button" type="button">
@@ -159,19 +94,7 @@ const Main:FC<{promo: TPromoFilm}> = ({ promo }) => {
           </div>
         </section>
 
-        <footer className="page-footer">
-          <div className="logo">
-            <a className="logo__link logo__link--light">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
-
-          <div className="copyright">
-            <p>© 2019 What to watch Ltd.</p>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );

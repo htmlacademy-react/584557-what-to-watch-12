@@ -7,26 +7,30 @@ import Movie from '../../pages/movie/movie-page';
 import NotFound from '../../pages/not-found/not-found';
 import Player from '../../pages/player/player';
 import SignIn from '../../pages/sign-in/sign-in';
-import { TPromoFilm } from '../../types/film';
+import { TFilm, TFilms } from '../../types/film';
 import { AppRoute } from '../../const';
 import PrivateRoute from '../private-route/private-route';
+import ScrollToTop from '../scroll-to-top/scroll-to-top';
 
-const App:FC<{promo: TPromoFilm}> = ({ promo }) => (
+const App:FC<{promo: TFilm; films: TFilms}> = ({ promo, films }) => (
   <BrowserRouter>
+    <ScrollToTop />
     <Routes>
-      <Route path={AppRoute.Root} element={<Main promo={promo}/>}/>
+      <Route path={AppRoute.Root}>
+        <Route index element={<Main promo={promo} films={films}/>}/>
+        <Route path={AppRoute.Films} element={<Movie films={films}/>}/>
+        <Route path={AppRoute.Rewiew} element={<AddReview films={films}/>}/>
+      </Route>
+      <Route path={AppRoute.Player} element={<Player films={films}/>}/>
       <Route path={AppRoute.Login} element={<SignIn />}/>
       <Route
         path={AppRoute.MyList}
         element={
           <PrivateRoute isAuthorazed={false}>
-            <MyList/>
+            <MyList films={films}/>
           </PrivateRoute>
         }
       />
-      <Route path={AppRoute.Films} element={<Movie/>}/>
-      <Route path={AppRoute.Rewiew} element={<AddReview/>}/>
-      <Route path={AppRoute.Player} element={<Player/>}/>
       <Route path='*' element={<NotFound/>}/>
     </Routes>
   </BrowserRouter>
