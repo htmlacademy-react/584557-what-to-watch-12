@@ -22,3 +22,6 @@ export const GENRES = [
   'Sci-Fi',
   'Thrillers'
 ];
+
+export const MIN_REVIEW_TEXT_LENGTH = 50;
+export const MAX_REVIEW_TEXT_LENGTH = 400;
