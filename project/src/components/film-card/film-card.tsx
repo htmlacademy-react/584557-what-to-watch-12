@@ -1,4 +1,4 @@
-import { FC, RefCallback, useCallback, useEffect, useState } from 'react';
+import { FC, RefCallback, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { PREVIEW_PALY_DELAY_MS } from '../../const';
 import { TFilm } from '../../types/film';
@@ -13,22 +13,24 @@ type TFilmCardProps = {
 const FilmCard:FC<TFilmCardProps> = ({ film, isActive, setActiveCardId }) => {
   const { name, previewImage, id, previewVideoLink } = film;
   const [isPlaying, setIsPlaying] = useState(false);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const timeoutId = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => () => {
-    if(timeoutId) {
-      clearTimeout(timeoutId);
+    if(timeoutId.current) {
+      clearTimeout(timeoutId.current);
     }
-  });
+  }, [isActive]);
 
   const onVideoPlayerMounted = useCallback<RefCallback<HTMLVideoElement | null>>(
     (videoElement) => {
       if(videoElement) {
         videoElement.addEventListener('loadeddata', () => {
-          setTimeoutId(setTimeout(() => {
+          const timeout = setTimeout(() => {
             setIsPlaying(true);
             videoElement.play();
-          }, PREVIEW_PALY_DELAY_MS));
+          }, PREVIEW_PALY_DELAY_MS);
+
+          timeoutId.current = timeout;
         });
       } else {
         setIsPlaying(false);
