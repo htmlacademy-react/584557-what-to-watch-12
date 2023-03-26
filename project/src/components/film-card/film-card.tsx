@@ -1,24 +1,60 @@
-import { FC } from 'react';
+import { FC, RefCallback, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PREVIEW_PALY_DELAY_MS } from '../../const';
 import { TFilm } from '../../types/film';
+import { VideoPlayer } from '../video-player/video-player';
 
 type TFilmCardProps = {
   film: TFilm;
   isActive: boolean;
-  setActiveCardId: (id: string) => void;
+  setActiveCardId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const FilmCard:FC<TFilmCardProps> = ({ film, isActive, setActiveCardId }) => {
-  const { name, previewImage, id } = film;
+  const { name, previewImage, id, previewVideoLink } = film;
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  useEffect(() => () => {
+    if(timeoutId) {
+      clearTimeout(timeoutId);
+    }
+  });
+
+  const onVideoPlayerMounted = useCallback<RefCallback<HTMLVideoElement | null>>(
+    (videoElement) => {
+      if(videoElement) {
+        videoElement.addEventListener('loadeddata', () => {
+          setTimeoutId(setTimeout(() => {
+            setIsPlaying(true);
+            videoElement.play();
+          }, PREVIEW_PALY_DELAY_MS));
+        });
+      } else {
+        setIsPlaying(false);
+      }
+    }, []
+  );
+
   return (
-    <article className="small-film-card catalog__films-card">
+    <article
+      onMouseEnter={() => {
+        setActiveCardId(id);
+      }}
+      onMouseLeave={() => {
+        setActiveCardId(null);
+      }}
+      className="small-film-card catalog__films-card"
+    >
       <div className="small-film-card__image">
-        <img
-          src={previewImage}
-          alt={name}
-          width="280"
-          height="175"
-        />
+        {
+          (!isPlaying) &&
+            (<img src={previewImage} alt={name} width="280" height="175"/>)
+        }
+        {
+          (isActive) &&
+            <VideoPlayer ref={onVideoPlayerMounted} src={previewVideoLink}/>
+        }
       </div>
       <h3 className="small-film-card__title">
         <Link to={`/films/${id}`} className="small-film-card__link">

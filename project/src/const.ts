@@ -25,3 +25,5 @@ export const GENRES = [
 
 export const MIN_REVIEW_TEXT_LENGTH = 50;
 export const MAX_REVIEW_TEXT_LENGTH = 400;
+
+export const PREVIEW_PALY_DELAY_MS = 1000;
