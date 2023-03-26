@@ -47,7 +47,7 @@ const FilmCard:FC<TFilmCardProps> = ({ film, isActive, setActiveCardId }) => {
         }
         {
           (isPlaying) &&
-            <VideoPlayer /*ref={onVideoPlayerMounted}*/ src={previewVideoLink}/>
+            <VideoPlayer src={previewVideoLink}/>
         }
       </div>
       <h3 className="small-film-card__title">
