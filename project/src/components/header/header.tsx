@@ -7,7 +7,7 @@ export const Header:FC<{
   additionalClassName?: string;
   children?: ReactNode | undefined;
 }> = ({ additionalClassName, children }) => (
-  <header className={`page-header ${additionalClassName ? additionalClassName : ''}`}>
+  <header className={`page-header ${additionalClassName ?? ''}`}>
     <Logo />
 
     { children }

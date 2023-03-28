@@ -19,7 +19,14 @@ const App:FC<{promo: TFilm; films: TFilms}> = ({ promo, films }) => (
       <Route path={AppRoute.Root}>
         <Route index element={<Main promo={promo} films={films}/>}/>
         <Route path={AppRoute.Films} element={<Movie films={films}/>}/>
-        <Route path={AppRoute.Rewiew} element={<AddReview films={films}/>}/>
+        <Route
+          path={AppRoute.Rewiew}
+          element={
+            <PrivateRoute isAuthorazed>
+              <AddReview films={films}/>
+            </PrivateRoute>
+          }
+        />
       </Route>
       <Route path={AppRoute.Player} element={<Player films={films}/>}/>
       <Route path={AppRoute.Login} element={<SignIn />}/>

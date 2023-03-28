@@ -1,28 +1,34 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
+import { MAX_REVIEW_TEXT_LENGTH, MIN_REVIEW_TEXT_LENGTH } from '../../const';
 import { RatingStars } from '../rating-stars/rating-stars';
 
-type TTAddReviewFormState = { 'review-text': string; rating: string }
+type TTAddReviewFormState = { 'review-text': string; rating: string | null }
 
 type TAddReviewFormProps = {
-  rating: number;
+  rating: number ;
   onFormSubmit?: (state: TTAddReviewFormState) => void;
 }
 export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFormSubmit }) => {
   const [state, setState] = useState<TTAddReviewFormState>(
     {
       'review-text': '',
-      'rating': String(initRating)
+      'rating': null
     }
   );
 
-  const { rating } = state;
-  const text = state['review-text'];
+  const rating = state.rating !== null ? Number(state.rating) : initRating;
+  const reviewText = state['review-text'];
+  const reviewTextLength = reviewText.length;
+
+  const isSubmitDisabled = state.rating === null ||
+    reviewTextLength < MIN_REVIEW_TEXT_LENGTH ||
+    reviewTextLength > MAX_REVIEW_TEXT_LENGTH;
 
   return (
     <form
       onSubmit={(evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        onFormSubmit && onFormSubmit(state);
+        !isSubmitDisabled && onFormSubmit && onFormSubmit(state);
       }}
       onChange={(evt: ChangeEvent<HTMLFormElement>) => {
         const { name, value } = evt.target;
@@ -34,12 +40,22 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
       }}
       className="add-review__form"
     >
-      <RatingStars rating={Number(rating)} />
+      <RatingStars rating={rating} />
 
       <div className="add-review__text">
-        <textarea className="add-review__textarea" name="review-text" id="review-text" placeholder="Review text" value={text}></textarea>
+        <textarea
+          className="add-review__textarea"
+          minLength={MIN_REVIEW_TEXT_LENGTH}
+          maxLength={MAX_REVIEW_TEXT_LENGTH}
+          name="review-text"
+          id="review-text"
+          placeholder="Review text"
+          value={reviewText}
+          required
+        >
+        </textarea>
         <div className="add-review__submit">
-          <button className="add-review__btn" type="submit">Post</button>
+          <button disabled={isSubmitDisabled} className="add-review__btn" type="submit">Post</button>
         </div>
       </div>
     </form>

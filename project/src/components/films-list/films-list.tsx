@@ -3,7 +3,7 @@ import { TFilms } from '../../types/film';
 import FilmCard from '../film-card/film-card';
 
 export const FilmsList: FC<{ films: TFilms }> = ({films}) => {
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
+  const [activeCardId, setActiveCardId] = useState<number | null>(null);
 
   return (
     <div className="catalog__films-list">
@@ -12,7 +12,7 @@ export const FilmsList: FC<{ films: TFilms }> = ({films}) => {
           <FilmCard
             key={film.id}
             film={film}
-            isActive={activeCardId === String(film.id)}
+            isActive={activeCardId === film.id}
             setActiveCardId={setActiveCardId}
           />
         ))
