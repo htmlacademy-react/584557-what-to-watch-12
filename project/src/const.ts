@@ -10,19 +10,6 @@ export enum AppRoute {
 
 export const STARS_RATING_LENGHT = 10;
 
-export const GENRES = [
-  'All genres',
-  'Comedies',
-  'Crime',
-  'Documentary',
-  'Dramas',
-  'Horror',
-  'Kids & Family',
-  'Romance',
-  'Sci-Fi',
-  'Thrillers'
-];
-
 export const MIN_REVIEW_TEXT_LENGTH = 50;
 export const MAX_REVIEW_TEXT_LENGTH = 400;
 
