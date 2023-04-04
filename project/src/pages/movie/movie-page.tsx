@@ -115,7 +115,7 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
 
-          <FilmsList films={films.slice(0, 4)}/>
+          <FilmsList maxRenderedItems={4} films={films}/>
         </section>
 
         <Footer />
