@@ -1,12 +1,16 @@
 import { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { Header } from '../../components/header/header';
+import { useAppSelector } from '../../hooks';
+import { selectFilmsByGenre } from '../../store/selectors';
 import { TFilm, TFilms } from '../../types/film';
 
 const Main:FC<{ promo: TFilm; films: TFilms }> = ({ promo, films }) => {
   const navigate = useNavigate();
+  const filteredFilms = useAppSelector(selectFilmsByGenre);
 
   const { name, genre, released, posterImage, backgroundImage, id } = promo;
   return (
@@ -75,6 +79,7 @@ const Main:FC<{ promo: TFilm; films: TFilms }> = ({ promo, films }) => {
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
           <GenresList />
+          <FilmsList films={filteredFilms}/>
         </section>
 
         <Footer />
