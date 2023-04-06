@@ -17,7 +17,7 @@ const App:FC<{promo: TFilm; films: TFilms}> = ({ promo, films }) => (
     <ScrollToTop />
     <Routes>
       <Route path={AppRoute.Root}>
-        <Route index element={<Main promo={promo} films={films}/>}/>
+        <Route index element={<Main promo={promo} />}/>
         <Route path={AppRoute.Films} element={<Movie films={films}/>}/>
         <Route
           path={AppRoute.Rewiew}
