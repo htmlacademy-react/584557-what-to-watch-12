@@ -2,10 +2,10 @@ import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { MAX_REVIEW_TEXT_LENGTH, MIN_REVIEW_TEXT_LENGTH } from '../../const';
 import { RatingStars } from '../rating-stars/rating-stars';
 
-type TTAddReviewFormState = { 'review-text': string; rating: string | null }
+type TTAddReviewFormState = { 'review-text': string; rating: number | null }
 
 type TAddReviewFormProps = {
-  rating: number ;
+  rating: number;
   onFormSubmit?: (state: TTAddReviewFormState) => void;
 }
 export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFormSubmit }) => {
