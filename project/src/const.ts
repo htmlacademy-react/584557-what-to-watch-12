@@ -1,6 +1,7 @@
+
 export enum AppRoute {
   Root = '/',
-  Films = 'films/:id',
+  Films = 'films/:id/:tabName?',
   Rewiew = 'films/:id/review',
   Login = '/login',
   MyList = '/mylist',
@@ -27,3 +28,9 @@ export const MIN_REVIEW_TEXT_LENGTH = 50;
 export const MAX_REVIEW_TEXT_LENGTH = 400;
 
 export const PREVIEW_PALY_DELAY_MS = 1000;
+
+export enum MovieTab {
+  Details = 'Details',
+  Reviews = 'Reviews',
+  Overview = 'Overview'
+}
