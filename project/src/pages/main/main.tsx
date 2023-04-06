@@ -1,13 +1,16 @@
 import { FC } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
+import { GenresList } from '../../components/genres-list/genres-list';
 import { Header } from '../../components/header/header';
-import { GENRES } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { selectFilmsByGenre } from '../../store/selectors';
 import { TFilm, TFilms } from '../../types/film';
 
 const Main:FC<{ promo: TFilm; films: TFilms }> = ({ promo, films }) => {
   const navigate = useNavigate();
+  const filteredFilms = useAppSelector(selectFilmsByGenre);
 
   const { name, genre, released, posterImage, backgroundImage, id } = promo;
   return (
@@ -75,23 +78,8 @@ const Main:FC<{ promo: TFilm; films: TFilms }> = ({ promo, films }) => {
         <section className="catalog">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-          <ul className="catalog__genres-list">
-            {GENRES.map((genresItem, idx) => (
-              <li key={genresItem} className={`catalog__genres-item ${idx === 0 ? 'catalog__genres-item--active' : ''}`}>
-                <Link to="#" className="catalog__genres-link">
-                  {genresItem}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          <FilmsList films={films}/>
-
-          <div className="catalog__more">
-            <button className="catalog__button" type="button">
-              Show more
-            </button>
-          </div>
+          <GenresList />
+          <FilmsList films={filteredFilms}/>
         </section>
 
         <Footer />
