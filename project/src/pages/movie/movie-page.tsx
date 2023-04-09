@@ -1,23 +1,23 @@
 import { FC } from 'react';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
-import { AppRoute } from '../../const';
+import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
+import { AppRoute, MovieTab } from '../../const';
 import { TFilms } from '../../types/film';
-import { getRaitingText } from '../../utils/common';
 
 
 const Movie:FC<{ films: TFilms }> = ({ films }) => {
   const navigate = useNavigate();
-  const { id } = useParams();
+  const { id, tabName } = useParams<{ id: string; tabName: `${MovieTab}` }>();
   const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
   if(!id || !film) {
     return <Navigate to={AppRoute.NotFound}/>;
   }
 
-  const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor, rating, scoresCount, description, director, starring } = film;
+  const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor } = film;
   return (
     <>
       <section className="film-card film-card--full" style={{backgroundColor: backgroundColor}}>
@@ -76,37 +76,7 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
               <img src={posterImage} alt={`${name} poster`} width="218" height="327" />
             </div>
 
-            <div className="film-card__desc">
-              <nav className="film-nav film-card__nav">
-                <ul className="film-nav__list">
-                  <li className="film-nav__item film-nav__item--active">
-                    <Link to="#" className="film-nav__link">Overview</Link>
-                  </li>
-                  <li className="film-nav__item">
-                    <Link to="#" className="film-nav__link">Details</Link>
-                  </li>
-                  <li className="film-nav__item">
-                    <Link to="#" className="film-nav__link">Reviews</Link>
-                  </li>
-                </ul>
-              </nav>
-
-              <div className="film-rating">
-                <div className="film-rating__score">{String(rating).replace('.', ',')}</div>
-                <p className="film-rating__meta">
-                  <span className="film-rating__level">{getRaitingText(rating)}</span>
-                  <span className="film-rating__count">{scoresCount} ratings</span>
-                </p>
-              </div>
-
-              <div className="film-card__text">
-                <p>{description}</p>
-
-                <p className="film-card__director"><strong>Director: {director}</strong></p>
-
-                <p className="film-card__starring"><strong>Starring: {starring.join(', ')} and other</strong></p>
-              </div>
-            </div>
+            <MovieTabs activeTab={tabName || MovieTab.Details } film={film}/>
           </div>
         </div>
       </section>
