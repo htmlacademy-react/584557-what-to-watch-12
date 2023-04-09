@@ -15,7 +15,6 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
 
   const [filmsListPage, setFilmsListPage] = useState(1);
   const filmsAmountForRender = filmsListPage * MAX_FILMS_PER_PAGE;
-  const goToNextFilmsListPage = () => setFilmsListPage((s) => s + 1);
 
   const filteredFilms = useAppSelector(selectFilmsByGenre);
   const activeGenre = useAppSelector(selectActiveGenre);
@@ -99,7 +98,7 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
             films={filteredFilms}
           />
 
-          {!isShowMoreBtnHidden && <ShowMore onClick={goToNextFilmsListPage}/>}
+          {!isShowMoreBtnHidden && <ShowMore onClick={() => setFilmsListPage((s) => s + 1)}/>}
         </section>
 
         <Footer />

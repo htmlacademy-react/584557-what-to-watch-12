@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Main from '../../pages/main/main';
 import MyList from '../../pages/my-list/my-list';
 import AddReview from '../../pages/add-review/add-review';
-import Movie from '../../pages/movie/movie-page';
+import Movie from '../../pages/movie/movie';
 import NotFound from '../../pages/not-found/not-found';
 import Player from '../../pages/player/player';
 import SignIn from '../../pages/sign-in/sign-in';
