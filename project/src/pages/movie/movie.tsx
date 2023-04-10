@@ -4,13 +4,13 @@ import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
-import { AppRoute, MovieTab } from '../../const';
+import { AppRoute, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { TFilms } from '../../types/film';
 
 
 const Movie:FC<{ films: TFilms }> = ({ films }) => {
   const navigate = useNavigate();
-  const { id, tabName } = useParams<{ id: string; tabName: `${MovieTab}` }>();
+  const { id, tabName } = useParams<{ id: string; tabName: MovieTab }>();
   const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
   if(!id || !film) {
@@ -76,20 +76,24 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
               <img src={posterImage} alt={`${name} poster`} width="218" height="327" />
             </div>
 
-            <MovieTabs activeTab={tabName || MovieTab.Details } film={film}/>
+            <MovieTabs activeTab={tabName || MovieTab.Overview} film={film}/>
           </div>
         </div>
       </section>
 
-      <div className="page-content">
-        <section className="catalog catalog--like-this">
-          <h2 className="catalog__title">More like this</h2>
+      {
+        films.length && (
+          <div className="page-content">
+            <section className="catalog catalog--like-this">
+              <h2 className="catalog__title">More like this</h2>
 
-          <FilmsList films={films.slice(0, 4)}/>
-        </section>
+              <FilmsList maxRenderedItems={MAX_RELATED_MOVIES_LIST_LENGTH} films={films}/>
+            </section>
 
-        <Footer />
-      </div>
+            <Footer />
+          </div>
+        )
+      }
     </>
   );};
 
