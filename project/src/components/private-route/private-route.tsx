@@ -1,13 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { useAuth } from '../../hooks';
 
 type PrivateRouteProps = {
-  isAuthorazed: boolean;
   children: JSX.Element;
 }
 
-function PrivateRoute(props: PrivateRouteProps): JSX.Element {
-  const { isAuthorazed, children } = props;
+function PrivateRoute({ children } : PrivateRouteProps) {
+  const isAuthorazed = useAuth();
 
   return (
     isAuthorazed

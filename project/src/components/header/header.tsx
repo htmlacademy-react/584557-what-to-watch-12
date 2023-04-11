@@ -1,31 +1,45 @@
 import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
+import { useAppSelector, useAuth } from '../../hooks';
+import { selectUserData } from '../../store/selectors';
 import { Logo } from '../logo/logo';
 
 export const Header:FC<{
   additionalClassName?: string;
   children?: ReactNode | undefined;
-}> = ({ additionalClassName, children }) => (
-  <header className={`page-header ${additionalClassName ?? ''}`}>
-    <Logo />
+}> = ({ additionalClassName, children }) => {
+  const isAuthorazed = useAuth();
+  const avatarUrl = useAppSelector(selectUserData)?.avatarUrl;
 
-    { children }
+  return (
+    <header className={`page-header ${additionalClassName ?? ''}`}>
+      <Logo />
 
-    <ul className="user-block">
-      <li className="user-block__item">
-        <div className="user-block__avatar">
-          <img
-            src="img/avatar.jpg"
-            alt="User avatar"
-            width="63"
-            height="63"
-          />
+      { children }
+
+      {!isAuthorazed && (
+        <div className="user-block">
+          <Link to={AppRoute.Login} className="user-block__link">Sign in</Link>
         </div>
-      </li>
-      <li className="user-block__item">
-        <Link to={AppRoute.Login} className="user-block__link">Sign out</Link>
-      </li>
-    </ul>
-  </header>
-);
+      )}
+
+      {isAuthorazed && (
+        <ul className="user-block">
+          <li className="user-block__item">
+            <div className="user-block__avatar">
+              <img
+                src={avatarUrl}
+                alt="User avatar"
+                width="63"
+                height="63"
+              />
+            </div>
+          </li>
+          <li className="user-block__item">
+            <Link to={AppRoute.Login} className="user-block__link">Sign out</Link>
+          </li>
+        </ul>
+      )}
+    </header>
+  );};
