@@ -24,3 +24,10 @@ export enum MovieTab {
 
 export const MAX_FILMS_PER_PAGE = 8;
 export const MAX_RELATED_MOVIES_LIST_LENGTH = 4;
+
+export const BASE_SERVER_URL = 'https://12.react.pages.academy/wtw';
+export const REQUEST_TIMEOUT = 5000;
+
+export enum ApiRoute {
+  Films = '/films'
+}
