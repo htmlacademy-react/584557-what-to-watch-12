@@ -1,29 +1,34 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
 import { GenresList } from '../../components/genres-list/genres-list';
 import { Header } from '../../components/header/header';
-import { ShowMore } from '../../components/show-more/show-more';
-import { MAX_FILMS_PER_PAGE } from '../../const';
-import { useAppSelector } from '../../hooks';
-import { selectActiveGenre, selectFilmsByGenre } from '../../store/selectors';
+import { Spinner } from '../../components/spinner/spinner';
+import { Error } from '../../components/error/error';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchFilmsAction } from '../../store/api-actions';
+import { selectFilmsDataLOadingFailed, selectFilmsDataLOadingStatus } from '../../store/selectors';
 import { TFilm } from '../../types/film';
 
 const Main:FC<{ promo: TFilm }> = ({ promo }) => {
   const navigate = useNavigate();
-
-  const [filmsListPage, setFilmsListPage] = useState(1);
-  const filmsAmountForRender = filmsListPage * MAX_FILMS_PER_PAGE;
-
-  const filteredFilms = useAppSelector(selectFilmsByGenre);
-  const activeGenre = useAppSelector(selectActiveGenre);
-
-  const isShowMoreBtnHidden = filteredFilms.length < filmsAmountForRender;
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setFilmsListPage(1);
-  }, [activeGenre]);
+    dispatch(fetchFilmsAction());
+  }, [dispatch]);
+
+  const isFilmsDataLoading = useAppSelector(selectFilmsDataLOadingStatus);
+  const isFilmsDataLoadingFailed = useAppSelector(selectFilmsDataLOadingFailed);
+
+  if(isFilmsDataLoading) {
+    return <Spinner/>;
+  }
+
+  if(isFilmsDataLoadingFailed) {
+    return <Error/>;
+  }
 
   const { name, genre, released, posterImage, backgroundImage, id } = promo;
   return (
@@ -93,12 +98,7 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
 
           <GenresList />
 
-          <FilmsList
-            maxRenderedItems={filmsAmountForRender}
-            films={filteredFilms}
-          />
-
-          {!isShowMoreBtnHidden && <ShowMore onClick={() => setFilmsListPage((s) => s + 1)}/>}
+          <FilmsList/>
         </section>
 
         <Footer />

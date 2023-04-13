@@ -29,5 +29,14 @@ export const BASE_SERVER_URL = 'https://12.react.pages.academy/wtw';
 export const REQUEST_TIMEOUT = 5000;
 
 export enum ApiRoute {
-  Films = '/films'
+  Films = '/films',
+  Login = '/login'
 }
+
+export enum AuthorizationStatus {
+  Auth = 'AUTH',
+  NoAuth = 'NO_AUTH',
+  Unknown = 'UNKNOWN',
+}
+
+export const AUTH_TOKEN_KEY_NAME = 'WTW-token';

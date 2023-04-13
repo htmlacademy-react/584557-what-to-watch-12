@@ -1,15 +1,16 @@
 import { FC } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { FilmsList } from '../../components/films-list/films-list';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
-import { AppRoute, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
+import { AppRoute, MovieTab } from '../../const';
 import { TFilms } from '../../types/film';
 
 
 const Movie:FC<{ films: TFilms }> = ({ films }) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   const { id, tabName } = useParams<{ id: string; tabName: MovieTab }>();
   const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
@@ -18,6 +19,8 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
   }
 
   const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor } = film;
+  const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname }/review`;
+
   return (
     <>
       <section className="film-card film-card--full" style={{backgroundColor: backgroundColor}}>
@@ -59,7 +62,7 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
                 </button>
                 <button
                   onClick={() => {
-                    navigate('review');
+                    navigate(addReviewPagePath);
                   }}
                   className="btn film-card__button"
                 >
@@ -87,7 +90,7 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
             <section className="catalog catalog--like-this">
               <h2 className="catalog__title">More like this</h2>
 
-              <FilmsList maxRenderedItems={MAX_RELATED_MOVIES_LIST_LENGTH} films={films}/>
+              {/* <FilmsList maxRenderedItems={MAX_RELATED_MOVIES_LIST_LENGTH} films={films}/> */}
             </section>
 
             <Footer />
