@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
@@ -8,19 +8,31 @@ import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchFilmsAction } from '../../store/api-actions';
-import { selectFilmsDataLOadingFailed, selectFilmsDataLOadingStatus } from '../../store/selectors';
+import { selectActiveGenre, selectFilmsByGenre, selectFilmsDataLoadingFailed, selectFilmsDataLoadingStatus } from '../../store/selectors';
 import { TFilm } from '../../types/film';
+import { ShowMore } from '../../components/show-more/show-more';
+import { MAX_FILMS_PER_PAGE } from '../../const';
 
 const Main:FC<{ promo: TFilm }> = ({ promo }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
+  const isFilmsDataLoading = useAppSelector(selectFilmsDataLoadingStatus);
+  const isFilmsDataLoadingFailed = useAppSelector(selectFilmsDataLoadingFailed);
+  const activeGenre = useAppSelector(selectActiveGenre);
+  const filteredFilms = useAppSelector(selectFilmsByGenre);
+
+  const [filmsListPage, setFilmsListPage] = useState(1);
+
   useEffect(() => {
     dispatch(fetchFilmsAction());
   }, [dispatch]);
 
-  const isFilmsDataLoading = useAppSelector(selectFilmsDataLOadingStatus);
-  const isFilmsDataLoadingFailed = useAppSelector(selectFilmsDataLOadingFailed);
+  useEffect(() => {
+    setFilmsListPage(1);
+  }, [activeGenre]);
+
+  const filmsAmountForRender = filmsListPage * MAX_FILMS_PER_PAGE;
 
   if(isFilmsDataLoading) {
     return <Spinner/>;
@@ -30,7 +42,10 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
     return <Error/>;
   }
 
+  const isShowMoreBtnHidden = filteredFilms.length < filmsAmountForRender;
+
   const { name, genre, released, posterImage, backgroundImage, id } = promo;
+
   return (
     <>
       <section className="film-card">
@@ -98,7 +113,8 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
 
           <GenresList />
 
-          <FilmsList/>
+          <FilmsList films={filteredFilms} maxRenderedItems={filmsAmountForRender} />
+          {!isShowMoreBtnHidden && <ShowMore onClick={() => setFilmsListPage((s) => s + 1)}/>}
         </section>
 
         <Footer />

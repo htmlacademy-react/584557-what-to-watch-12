@@ -21,7 +21,7 @@ const App:FC<{promo: TFilm}> = ({ promo }) => (
     <Routes>
       <Route path={AppRoute.Root}>
         <Route index element={<Main promo={promo} />}/>
-        <Route path={AppRoute.Films} element={<Movie films={films}/>}/>
+        <Route path={AppRoute.Films} element={<Movie/>}/>
         <Route
           path={AppRoute.Rewiew}
           element={

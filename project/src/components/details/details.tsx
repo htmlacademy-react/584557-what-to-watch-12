@@ -1,6 +1,6 @@
 import { FC, Fragment } from 'react';
 import { TFilm } from '../../types/film';
-import { getRuntimeString } from '../../utils/time-formatters';
+import { getRuntimeString } from '../../utils/date-time-formatters';
 
 export const Details:FC<{ film: TFilm }> = ({ film }) => {
   const { director, starring, genre, released, runTime } = film;

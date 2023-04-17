@@ -1,84 +1,40 @@
-export const Reviews = () => (
-  <div className="film-card__reviews film-card__row">
-    <div className="film-card__reviews-col">
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">Discerning travellers and Wes Anderson fans will luxuriate in the glorious Mittel-European kitsch of one of the director&quot;s funniest and most exquisitely designed films in years.</p>
+import { FC } from 'react';
+import { TComments } from '../../types/comment';
+import { Review } from '../review/review';
 
-          <footer className="review__details">
-            <cite className="review__author">Kate Muir</cite>
-            <time className="review__date" dateTime="2016-12-24">December 24, 2016</time>
-          </footer>
-        </blockquote>
+export const Reviews:FC<{ filmComments: TComments }> = ({ filmComments }) => {
+  if(!filmComments.length) {
+    return <p style={{ background: 'rgba(0,0,0,0.5)', padding: '5px' }}>No comments yet...</p>;
+  }
 
-        <div className="review__rating">8,9</div>
+  const commentsColumns = filmComments.reduce((acc, comment, idx) => {
+    if(idx % 2 === 0) {
+      acc.leftColumnComments.push(comment);
+    } else {
+      acc.rightColumnComments.push(comment);
+    }
+
+    return acc;
+  }, {
+    leftColumnComments: ([] as TComments),
+    rightColumnComments: ([] as TComments)
+  });
+
+  const { leftColumnComments, rightColumnComments } = commentsColumns;
+
+  return (
+    <div className="film-card__reviews film-card__row">
+      <div className="film-card__reviews-col">
+        {
+          leftColumnComments.map((comment) => (<Review key={comment.id} review={comment} />))
+        }
       </div>
-
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">Anderson&apos;s films are too precious for some, but for those of us willing to lose ourselves in them, they&apos;re a delight. &quot;The Grand Budapest Hotel&quot; is no different, except that he has added a hint of gravitas to the mix, improving the recipe.</p>
-
-          <footer className="review__details">
-            <cite className="review__author">Bill Goodykoontz</cite>
-            <time className="review__date" dateTime="2015-11-18">November 18, 2015</time>
-          </footer>
-        </blockquote>
-
-        <div className="review__rating">8,0</div>
-      </div>
-
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">I didn&quot;t find it amusing, and while I can appreciate the creativity, it&quot;s an hour and 40 minutes I wish I could take back.</p>
-
-          <footer className="review__details">
-            <cite className="review__author">Amanda Greever</cite>
-            <time className="review__date" dateTime="2015-11-18">November 18, 2015</time>
-          </footer>
-        </blockquote>
-
-        <div className="review__rating">8,0</div>
-      </div>
+      {rightColumnComments.length && (
+        <div className="film-card__reviews-col">
+          {
+            rightColumnComments.map((comment) => (<Review key={comment.id} review={comment} />))
+          }
+        </div>
+      )}
     </div>
-    <div className="film-card__reviews-col">
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">The mannered, madcap proceedings are often delightful, occasionally silly, and here and there, gruesome and/or heartbreaking.</p>
-
-          <footer className="review__details">
-            <cite className="review__author">Matthew Lickona</cite>
-            <time className="review__date" dateTime="2016-12-20">December 20, 2016</time>
-          </footer>
-        </blockquote>
-
-        <div className="review__rating">7,2</div>
-      </div>
-
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">It is certainly a magical and childlike way of storytelling, even if the content is a little more adult.</p>
-
-          <footer className="review__details">
-            <cite className="review__author">Paula Fleri-Soler</cite>
-            <time className="review__date" dateTime="2016-12-20">December 20, 2016</time>
-          </footer>
-        </blockquote>
-
-        <div className="review__rating">7,6</div>
-      </div>
-
-      <div className="review">
-        <blockquote className="review__quote">
-          <p className="review__text">It is certainly a magical and childlike way of storytelling, even if the content is a little more adult.</p>
-
-          <footer className="review__details">
-            <cite className="review__author">Paula Fleri-Soler</cite>
-            <time className="review__date" dateTime="2016-12-20">December 20, 2016</time>
-          </footer>
-        </blockquote>
-
-        <div className="review__rating">7,0</div>
-      </div>
-    </div>
-  </div>
-);
+  );};

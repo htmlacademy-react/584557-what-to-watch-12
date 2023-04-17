@@ -1,25 +1,50 @@
-import { FC } from 'react';
+import { useEffect } from 'react';
 import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
-import { AppRoute, MovieTab } from '../../const';
-import { TFilms } from '../../types/film';
+import { Spinner } from '../../components/spinner/spinner';
+import { Error } from '../../components/error/error';
+import { AppRoute, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchActiveFilmAction } from '../../store/api-actions';
+import { selectActiveFilm, selectActiveFilmDataLoadingFailed, selectActiveFilmsDataLoadingStatus } from '../../store/selectors';
+import { Footer } from '../../components/footer/footer';
+import { FilmsList } from '../../components/films-list/films-list';
 
-
-const Movie:FC<{ films: TFilms }> = ({ films }) => {
+const Movie = () => {
+  const dispath = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const { id, tabName } = useParams<{ id: string; tabName: MovieTab }>();
-  const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
-  if(!id || !film) {
+  useEffect(() => {
+    dispath(fetchActiveFilmAction(Number(id)));
+  }, [dispath, id]);
+
+  const activeFilm = useAppSelector(selectActiveFilm);
+  const isLoading = useAppSelector(selectActiveFilmsDataLoadingStatus);
+  const isLoadingFalled = useAppSelector(selectActiveFilmDataLoadingFailed);
+
+  if(isLoading) {
+    return <Spinner/>;
+  }
+
+  if(isLoadingFalled) {
+    return <Error/>;
+  }
+
+  if(activeFilm === null) {
+    return null;
+  }
+
+  if(!id || (!activeFilm && !isLoading)) {
     return <Navigate to={AppRoute.NotFound}/>;
   }
 
+  const { film, similarFilms, filmComments } = activeFilm;
   const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor } = film;
-  const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname }/review`;
+  const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname}/review`;
 
   return (
     <>
@@ -79,18 +104,18 @@ const Movie:FC<{ films: TFilms }> = ({ films }) => {
               <img src={posterImage} alt={`${name} poster`} width="218" height="327" />
             </div>
 
-            <MovieTabs activeTab={tabName || MovieTab.Overview} film={film}/>
+            <MovieTabs activeTab={tabName || MovieTab.Overview} film={film} filmComments={filmComments}/>
           </div>
         </div>
       </section>
 
       {
-        films.length && (
+        similarFilms.length && (
           <div className="page-content">
             <section className="catalog catalog--like-this">
               <h2 className="catalog__title">More like this</h2>
 
-              {/* <FilmsList maxRenderedItems={MAX_RELATED_MOVIES_LIST_LENGTH} films={films}/> */}
+              <FilmsList maxRenderedItems={MAX_RELATED_MOVIES_LIST_LENGTH} films={similarFilms}/>
             </section>
 
             <Footer />

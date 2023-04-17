@@ -30,6 +30,8 @@ export const REQUEST_TIMEOUT = 5000;
 
 export enum ApiRoute {
   Films = '/films',
+  SimilarFilms = '/similar',
+  FilmComments = '/comments',
   Login = '/login'
 }
 
