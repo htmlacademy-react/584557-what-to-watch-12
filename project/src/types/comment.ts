@@ -10,3 +10,5 @@ export type TComment = {
 }
 
 export type TComments = Array<TComment>
+
+export type TNewCommentData = { comment: string; rating: number; filmId: number }

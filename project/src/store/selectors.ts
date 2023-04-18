@@ -11,6 +11,8 @@ export const selectAuthorizationStatus = (state: State) => state.authorizationSt
 export const selectActiveFilm = (state: State) => state.activeFilm;
 export const selectActiveFilmsDataLoadingStatus = (state: State) => state.isActiveFilmDataLoading;
 export const selectActiveFilmDataLoadingFailed = (state: State) => state.isActiveFilmDataFailed;
+export const selectNewCommentLoadingStatus = (state: State) => state.isNewCommentDataLoading;
+export const selectNewCommentLoadingFailed = (state: State) => state.isNewCommentDataFailed;
 
 export const selectFilmsByGenre = createSelector(
   selectAllFilms,

@@ -4,10 +4,10 @@ import { Header } from '../../components/header/header';
 import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
 import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
-import { AppRoute, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
+import { AppRoute, AuthorizationStatus, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchActiveFilmAction } from '../../store/api-actions';
-import { selectActiveFilm, selectActiveFilmDataLoadingFailed, selectActiveFilmsDataLoadingStatus } from '../../store/selectors';
+import { selectActiveFilm, selectActiveFilmDataLoadingFailed, selectActiveFilmsDataLoadingStatus, selectAuthorizationStatus } from '../../store/selectors';
 import { Footer } from '../../components/footer/footer';
 import { FilmsList } from '../../components/films-list/films-list';
 
@@ -25,6 +25,8 @@ const Movie = () => {
   const activeFilm = useAppSelector(selectActiveFilm);
   const isLoading = useAppSelector(selectActiveFilmsDataLoadingStatus);
   const isLoadingFalled = useAppSelector(selectActiveFilmDataLoadingFailed);
+  const isAuthorize = useAppSelector(selectAuthorizationStatus) === AuthorizationStatus.Auth;
+  console.log(isAuthorize);
 
   if(isLoading) {
     return <Spinner/>;
@@ -85,14 +87,18 @@ const Movie = () => {
                   <span>My list</span>
                   <span className="film-card__count">9</span>
                 </button>
-                <button
-                  onClick={() => {
-                    navigate(addReviewPagePath);
-                  }}
-                  className="btn film-card__button"
-                >
-                  Add review
-                </button>
+                {
+                  isAuthorize && (
+                    <button
+                      onClick={() => {
+                        navigate(addReviewPagePath);
+                      }}
+                      className="btn film-card__button"
+                    >
+                      Add review
+                    </button>
+                  )
+                }
               </div>
             </div>
           </div>

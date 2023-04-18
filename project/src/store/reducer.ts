@@ -1,7 +1,7 @@
 import { TUserData } from '../types/user';
 import { TFilms, TActiveFilmData } from './../types/film';
 import { createReducer } from '@reduxjs/toolkit';
-import { changeGenre, setFilms, setUserData, setAuthorizationStatus, setFilmsDataLoadingFailed, setFilmsDataLoadingStatus, setActiveFilm, setActiveFilmDataLoadingFailed, setActiveFilmDataLoadingStatus } from './action';
+import { changeGenre, setFilms, setUserData, setAuthorizationStatus, setFilmsDataLoadingFailed, setFilmsDataLoadingStatus, setActiveFilm, setActiveFilmDataLoadingFailed, setActiveFilmDataLoadingStatus, addComment, setNewCommentLoadingStatus, setNewCommentLoadingFailed } from './action';
 import { AuthorizationStatus } from '../const';
 
 const initialState: {
@@ -14,6 +14,8 @@ const initialState: {
   activeFilm: TActiveFilmData | null;
   isActiveFilmDataLoading: boolean;
   isActiveFilmDataFailed: boolean;
+  isNewCommentDataLoading: boolean;
+  isNewCommentDataFailed: boolean;
 } = {
   genre: 'All genres',
   films: [],
@@ -24,6 +26,8 @@ const initialState: {
   activeFilm: null,
   isActiveFilmDataLoading: false,
   isActiveFilmDataFailed: false,
+  isNewCommentDataLoading: false,
+  isNewCommentDataFailed: false,
 };
 
 export const reducer = createReducer(initialState, (builder) => {
@@ -54,5 +58,15 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(setAuthorizationStatus, (state, { payload }) => {
       state.authorizationStatus = payload;
+    })
+    .addCase(addComment, (state, { payload }) => {
+      state.activeFilm?.filmComments.push(payload);
+    })
+    .addCase(setNewCommentLoadingStatus, (state, { payload }) => {
+      state.isNewCommentDataLoading = payload;
+    })
+    .addCase(setNewCommentLoadingFailed, (state, { payload }) => {
+      state.isNewCommentDataFailed = payload;
     });
 });
+

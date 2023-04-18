@@ -42,3 +42,5 @@ export enum AuthorizationStatus {
 }
 
 export const AUTH_TOKEN_KEY_NAME = 'WTW-token';
+
+export const NOT_FOUND_STATUS_CODE = 404;
