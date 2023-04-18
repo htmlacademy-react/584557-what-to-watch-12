@@ -2,10 +2,9 @@ import { FC } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AddReviewForm, TAddReviewFormState } from '../../components/add-review-form/add-review-form';
 import { Header } from '../../components/header/header';
-import { AppRoute, AuthorizationStatus } from '../../const';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { AppRoute } from '../../const';
+import { useAppDispatch } from '../../hooks';
 import { addCommentAction } from '../../store/api-actions';
-import { selectAuthorizationStatus } from '../../store/selectors';
 import { TFilms } from '../../types/film';
 
 const AddReview: FC<{ films: TFilms }> = ({ films }) => {

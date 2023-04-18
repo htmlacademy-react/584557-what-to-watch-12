@@ -26,7 +26,6 @@ const Movie = () => {
   const isLoading = useAppSelector(selectActiveFilmsDataLoadingStatus);
   const isLoadingFalled = useAppSelector(selectActiveFilmDataLoadingFailed);
   const isAuthorize = useAppSelector(selectAuthorizationStatus) === AuthorizationStatus.Auth;
-  console.log(isAuthorize);
 
   if(isLoading) {
     return <Spinner/>;
