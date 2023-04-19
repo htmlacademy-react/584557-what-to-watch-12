@@ -1,6 +1,7 @@
+import { TComment } from './../types/comment';
 import { AppRoute } from './../const';
 import { TUserData } from '../types/user';
-import { TFilms } from './../types/film';
+import { TActiveFilmData, TFilms } from './../types/film';
 import { createAction } from '@reduxjs/toolkit';
 import { AuthorizationStatus } from '../const';
 
@@ -44,5 +45,44 @@ export const redirectToRoute = createAction(
   'router/redirectToRoute',
   (route: AppRoute) => ({
     payload: route
+  })
+);
+
+export const setActiveFilm = createAction('activeFilm/set', (filmData: TActiveFilmData) => ({
+  payload: filmData
+}));
+
+export const setActiveFilmDataLoadingFailed = createAction(
+  'activeFilm/setActiveFilmDataLoadingFailed',
+  (isError: boolean) => ({
+    payload: isError
+  })
+);
+
+export const setActiveFilmDataLoadingStatus = createAction(
+  'activeFilm/setActiveFilmDataLoadingStatus',
+  (loadingStatus: boolean) => ({
+    payload: loadingStatus
+  })
+);
+
+export const addComment = createAction(
+  'activeFilm/addComment',
+  (comment: TComment) => ({
+    payload: comment
+  })
+);
+
+export const setNewCommentLoadingFailed = createAction(
+  'activeFilm/setNewCommentLoadingFailed',
+  (isError: boolean) => ({
+    payload: isError
+  })
+);
+
+export const setNewCommentLoadingStatus = createAction(
+  'activeFilm/setNewCommentLoadingStatus',
+  (loadingStatus: boolean) => ({
+    payload: loadingStatus
   })
 );

@@ -1,26 +1,31 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { MAX_REVIEW_TEXT_LENGTH, MIN_REVIEW_TEXT_LENGTH } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { selectNewCommentLoadingFailed, selectNewCommentLoadingStatus } from '../../store/selectors';
 import { RatingStars } from '../rating-stars/rating-stars';
 
-type TTAddReviewFormState = { 'review-text': string; rating: number | null }
+export type TAddReviewFormState = { 'review-text': string; rating: number | null }
 
 type TAddReviewFormProps = {
   rating: number;
-  onFormSubmit?: (state: TTAddReviewFormState) => void;
+  onFormSubmit: (data: TAddReviewFormState) => void;
 }
 export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFormSubmit }) => {
-  const [state, setState] = useState<TTAddReviewFormState>(
+  const [state, setState] = useState<TAddReviewFormState>(
     {
       'review-text': '',
-      'rating': null
+      rating: null
     }
   );
+
+  const isLoading = useAppSelector(selectNewCommentLoadingStatus);
+  const isRequestFailed = useAppSelector(selectNewCommentLoadingFailed);
 
   const rating = state.rating !== null ? Number(state.rating) : initRating;
   const reviewText = state['review-text'];
   const reviewTextLength = reviewText.length;
 
-  const isSubmitDisabled = state.rating === null ||
+  const isSubmitDisabled = isLoading || state.rating === null ||
     reviewTextLength < MIN_REVIEW_TEXT_LENGTH ||
     reviewTextLength > MAX_REVIEW_TEXT_LENGTH;
 
@@ -28,7 +33,7 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
     <form
       onSubmit={(evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        !isSubmitDisabled && onFormSubmit && onFormSubmit(state);
+        !isSubmitDisabled && onFormSubmit(state);
       }}
       onChange={(evt: ChangeEvent<HTMLFormElement>) => {
         const { name, value } = evt.target;
@@ -40,10 +45,11 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
       }}
       className="add-review__form"
     >
-      <RatingStars rating={rating} />
+      <RatingStars isDisabled={isLoading} rating={rating} />
 
       <div className="add-review__text">
         <textarea
+          disabled={isLoading}
           className="add-review__textarea"
           minLength={MIN_REVIEW_TEXT_LENGTH}
           maxLength={MAX_REVIEW_TEXT_LENGTH}
@@ -54,9 +60,12 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
           required
         >
         </textarea>
+
         <div className="add-review__submit">
           <button disabled={isSubmitDisabled} className="add-review__btn" type="submit">Post</button>
         </div>
       </div>
+
+      {isRequestFailed && <p>Error! New commet not added! Try again!</p>}
     </form>
   );};

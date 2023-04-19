@@ -10,3 +10,12 @@ export const getRuntimeString = (runTimeMinutes: number) => {
 
   return a;
 };
+
+export const toYYYYMMDD = (dateString: string) => (new Date(dateString)).toISOString().split('T')[0];
+
+export const toMMMMDDYYYY = (dateString: string) => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = { month: 'long', day: 'numeric', year: 'numeric' };
+
+  return date.toLocaleDateString('en-US', options);
+};

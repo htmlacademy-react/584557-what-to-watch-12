@@ -1,6 +1,7 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute, MovieTab } from '../../const';
+import { TComments } from '../../types/comment';
 import { TFilm } from '../../types/film';
 import { Details } from '../details/details';
 import { Overview } from '../overview/overview';
@@ -12,7 +13,7 @@ const tabsMap = {
   [MovieTab.Overview]: Overview,
 };
 
-export const MovieTabs:FC<{ film: TFilm; activeTab: MovieTab }> = ({ film, activeTab }) => {
+export const MovieTabs:FC<{ film: TFilm; activeTab: MovieTab; filmComments: TComments }> = ({ film, activeTab, filmComments }) => {
   const { id } = film;
   const TabComponent = tabsMap[activeTab] || Overview;
 
@@ -41,6 +42,6 @@ export const MovieTabs:FC<{ film: TFilm; activeTab: MovieTab }> = ({ film, activ
         </ul>
       </nav>
 
-      <TabComponent film={film}/>
+      <TabComponent film={film} filmComments={filmComments} />
     </div>
   );};

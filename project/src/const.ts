@@ -30,6 +30,8 @@ export const REQUEST_TIMEOUT = 5000;
 
 export enum ApiRoute {
   Films = '/films',
+  SimilarFilms = '/similar',
+  FilmComments = '/comments',
   Login = '/login'
 }
 
@@ -40,3 +42,5 @@ export enum AuthorizationStatus {
 }
 
 export const AUTH_TOKEN_KEY_NAME = 'WTW-token';
+
+export const NOT_FOUND_STATUS_CODE = 404;

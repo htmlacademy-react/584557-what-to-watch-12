@@ -1,7 +1,7 @@
 import { FC, Fragment } from 'react';
 import { STARS_RATING_LENGHT } from '../../const';
 
-export const RatingStars:FC<{ rating: number }> = ({ rating }) => (
+export const RatingStars:FC<{ rating: number; isDisabled: boolean }> = ({ rating, isDisabled }) => (
   <div className="rating">
     <div className="rating__stars">
       {Array(STARS_RATING_LENGHT).fill('').map((_, idx) => {
@@ -11,6 +11,7 @@ export const RatingStars:FC<{ rating: number }> = ({ rating }) => (
         return (
           <Fragment key={ratingId}>
             <input
+              disabled={isDisabled}
               className="rating__input"
               id={`star-${ratingId}`}
               type="radio"

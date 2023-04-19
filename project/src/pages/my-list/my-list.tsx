@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { FilmsList } from '../../components/films-list/films-list';
 import { Footer } from '../../components/footer/footer';
 import { Header } from '../../components/header/header';
 import { TFilms } from '../../types/film';
@@ -12,7 +13,7 @@ const MyList:FC<{ films: TFilms }> = ({ films }) => (
     <section className="catalog">
       <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-      {/* <FilmsList films={films} /> */}
+      <FilmsList films={films} />
     </section>
 
     <Footer />

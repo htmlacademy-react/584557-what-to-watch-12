@@ -1,3 +1,4 @@
+import { TComments } from './comment';
 export type TFilm = {
   'name': string;
   'posterImage': string;
@@ -19,3 +20,9 @@ export type TFilm = {
 }
 
 export type TFilms = TFilm[];
+
+export type TActiveFilmData = {
+  film: TFilm;
+  similarFilms: TFilms;
+  filmComments: TComments;
+}

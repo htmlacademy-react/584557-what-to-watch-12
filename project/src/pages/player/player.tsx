@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { TFilms } from '../../types/film';
-import { fromSecToFilmDuration } from '../../utils/time-formatters';
+import { fromSecToFilmDuration } from '../../utils/date-time-formatters';
 
 const Player:FC<{ films: TFilms }> = ({ films }) => {
   const navigate = useNavigate();

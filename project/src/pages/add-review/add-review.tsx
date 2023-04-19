@@ -1,19 +1,34 @@
 import { FC } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { AddReviewForm } from '../../components/add-review-form/add-review-form';
+import { AddReviewForm, TAddReviewFormState } from '../../components/add-review-form/add-review-form';
 import { Header } from '../../components/header/header';
 import { AppRoute } from '../../const';
+import { useAppDispatch } from '../../hooks';
+import { addCommentAction } from '../../store/api-actions';
 import { TFilms } from '../../types/film';
 
 const AddReview: FC<{ films: TFilms }> = ({ films }) => {
   const { id } = useParams();
+  const dispatch = useAppDispatch();
   const film = films.find((filmsItem) => filmsItem.id === Number(id));
+
+
+  const addNewComment = (newCommentData: TAddReviewFormState) => {
+    const { rating } = newCommentData;
+    const comment = newCommentData['review-text'];
+
+    if(id && rating) {
+      const filmId = Number(id);
+      dispatch(addCommentAction({rating, comment, filmId }));
+    }
+  };
 
   if(!id || !film) {
     return <Navigate to={AppRoute.NotFound}/>;
   }
 
   const { name, backgroundImage, posterImage, rating } = film;
+
   return (
     <section className="film-card film-card--full">
       <div className="film-card__header">
@@ -29,6 +44,7 @@ const AddReview: FC<{ films: TFilms }> = ({ films }) => {
               <li className="breadcrumbs__item">
                 <Link to={`/films/${id}`} className="breadcrumbs__link">{name}</Link>
               </li>
+
               <li className="breadcrumbs__item">
                 <span className="breadcrumbs__link">Add review</span>
               </li>
@@ -42,7 +58,7 @@ const AddReview: FC<{ films: TFilms }> = ({ films }) => {
       </div>
 
       <div className="add-review">
-        <AddReviewForm rating={rating}/>
+        <AddReviewForm rating={rating} onFormSubmit={addNewComment}/>
       </div>
     </section>
   );};

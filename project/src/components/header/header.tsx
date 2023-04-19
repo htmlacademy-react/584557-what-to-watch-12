@@ -1,15 +1,15 @@
 import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import { AppRoute } from '../../const';
-import { useAppSelector, useAuth } from '../../hooks';
-import { selectUserData } from '../../store/selectors';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { useAppSelector } from '../../hooks';
+import { selectAuthorizationStatus, selectUserData } from '../../store/selectors';
 import { Logo } from '../logo/logo';
 
 export const Header:FC<{
   additionalClassName?: string;
   children?: ReactNode | undefined;
 }> = ({ additionalClassName, children }) => {
-  const isAuthorazed = useAuth();
+  const isAuthorazed = AuthorizationStatus.Auth === useAppSelector(selectAuthorizationStatus);
   const avatarUrl = useAppSelector(selectUserData)?.avatarUrl;
 
   return (
