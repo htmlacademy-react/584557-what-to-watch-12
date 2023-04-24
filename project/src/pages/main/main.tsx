@@ -8,7 +8,7 @@ import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchFilmsAction } from '../../store/api-actions';
-import { selectActiveGenre, selectFilmsByGenre, selectFilmsDataLoadingFailed, selectFilmsDataLoadingStatus } from '../../store/selectors';
+import { selectFilmsByGenre, selectFilmsState } from '../../store/films/selectors';
 import { TFilm } from '../../types/film';
 import { ShowMore } from '../../components/show-more/show-more';
 import { MAX_FILMS_PER_PAGE } from '../../const';
@@ -17,9 +17,7 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const isFilmsDataLoading = useAppSelector(selectFilmsDataLoadingStatus);
-  const isFilmsDataLoadingFailed = useAppSelector(selectFilmsDataLoadingFailed);
-  const activeGenre = useAppSelector(selectActiveGenre);
+  const { isLoading, error, activeGenre } = useAppSelector(selectFilmsState);
   const filteredFilms = useAppSelector(selectFilmsByGenre);
 
   const [filmsListPage, setFilmsListPage] = useState(1);
@@ -34,11 +32,11 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
 
   const filmsAmountForRender = filmsListPage * MAX_FILMS_PER_PAGE;
 
-  if(isFilmsDataLoading) {
+  if(isLoading) {
     return <Spinner/>;
   }
 
-  if(isFilmsDataLoadingFailed) {
+  if(error) {
     return <Error/>;
   }
 

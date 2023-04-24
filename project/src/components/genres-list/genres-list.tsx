@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { changeGenre } from '../../store/action';
-import { selectActiveGenre, selectGenres } from '../../store/selectors';
+import { changeGenre } from '../../store/films/films';
+import { selectActiveGenre, selectGenres } from '../../store/films/selectors';
 
 export const GenresList = () => {
   const activeGenre = useAppSelector(selectActiveGenre);

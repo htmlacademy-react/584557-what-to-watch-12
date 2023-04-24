@@ -1,19 +1,21 @@
 import { ChangeEvent, FC, FormEvent, useState } from 'react';
 import { MAX_REVIEW_TEXT_LENGTH, MIN_REVIEW_TEXT_LENGTH } from '../../const';
 import { useAppSelector } from '../../hooks';
-import { selectNewCommentLoadingFailed, selectNewCommentLoadingStatus } from '../../store/selectors';
+import { selectNewCommentLoadingFailed, selectNewCommentLoadingStatus } from '../../store/new-comment/selectors';
+import { TNewComment } from '../../types/comment';
 import { RatingStars } from '../rating-stars/rating-stars';
 
-export type TAddReviewFormState = { 'review-text': string; rating: number | null }
+export type TAddReviewFormState = { comment: string; rating: number | null }
 
 type TAddReviewFormProps = {
   rating: number;
-  onFormSubmit: (data: TAddReviewFormState) => void;
+  onFormSubmit: (data: TNewComment) => void;
 }
+
 export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFormSubmit }) => {
   const [state, setState] = useState<TAddReviewFormState>(
     {
-      'review-text': '',
+      comment: '',
       rating: null
     }
   );
@@ -22,7 +24,7 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
   const isRequestFailed = useAppSelector(selectNewCommentLoadingFailed);
 
   const rating = state.rating !== null ? Number(state.rating) : initRating;
-  const reviewText = state['review-text'];
+  const reviewText = state.comment;
   const reviewTextLength = reviewText.length;
 
   const isSubmitDisabled = isLoading || state.rating === null ||
@@ -33,7 +35,12 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
     <form
       onSubmit={(evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        !isSubmitDisabled && onFormSubmit(state);
+
+        const { comment, rating: stateRating } = state;
+
+        if(stateRating !== null) {
+          !isSubmitDisabled && onFormSubmit({ comment, rating: stateRating });
+        }
       }}
       onChange={(evt: ChangeEvent<HTMLFormElement>) => {
         const { name, value } = evt.target;
@@ -53,8 +60,8 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
           className="add-review__textarea"
           minLength={MIN_REVIEW_TEXT_LENGTH}
           maxLength={MAX_REVIEW_TEXT_LENGTH}
-          name="review-text"
-          id="review-text"
+          name="comment"
+          id="comment"
           placeholder="Review text"
           value={reviewText}
           required

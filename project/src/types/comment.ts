@@ -11,4 +11,6 @@ export type TComment = {
 
 export type TComments = Array<TComment>
 
-export type TNewCommentData = { comment: string; rating: number; filmId: number }
+export type TNewCommentRequestBody = TNewComment & { filmId: number }
+
+export type TNewComment = { comment: string; rating: number }
