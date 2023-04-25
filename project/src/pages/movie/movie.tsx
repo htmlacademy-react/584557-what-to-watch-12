@@ -7,9 +7,10 @@ import { Error } from '../../components/error/error';
 import { AppRoute, AuthorizationStatus, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchActiveFilmAction } from '../../store/api-actions';
-import { selectActiveFilm, selectActiveFilmDataLoadingFailed, selectActiveFilmsDataLoadingStatus, selectAuthorizationStatus } from '../../store/selectors';
+import { selectActiveFilm } from '../../store/acive-film/selectors';
 import { Footer } from '../../components/footer/footer';
 import { FilmsList } from '../../components/films-list/films-list';
+import { selectAuthorizationStatus } from '../../store/user-data/selectors';
 
 const Movie = () => {
   const dispath = useAppDispatch();
@@ -22,28 +23,26 @@ const Movie = () => {
     dispath(fetchActiveFilmAction(Number(id)));
   }, [dispath, id]);
 
-  const activeFilm = useAppSelector(selectActiveFilm);
-  const isLoading = useAppSelector(selectActiveFilmsDataLoadingStatus);
-  const isLoadingFalled = useAppSelector(selectActiveFilmDataLoadingFailed);
+  const { data, isLoading, error } = useAppSelector(selectActiveFilm);
   const isAuthorize = useAppSelector(selectAuthorizationStatus) === AuthorizationStatus.Auth;
 
   if(isLoading) {
     return <Spinner/>;
   }
 
-  if(isLoadingFalled) {
+  if(error) {
     return <Error/>;
   }
 
-  if(activeFilm === null) {
+  if(data === null) {
     return null;
   }
 
-  if(!id || (!activeFilm && !isLoading)) {
+  if(!id || (!data && !isLoading)) {
     return <Navigate to={AppRoute.NotFound}/>;
   }
 
-  const { film, similarFilms, filmComments } = activeFilm;
+  const { film, similarFilms, filmComments } = data;
   const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor } = film;
   const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname}/review`;
 

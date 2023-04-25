@@ -1,94 +1,78 @@
-import { ApiRoute, AppRoute, AuthorizationStatus, NOT_FOUND_STATUS_CODE } from './../const';
-import { TFilm, TFilms } from './../types/film';
+import { ApiRoute, AppRoute, NOT_FOUND_STATUS_CODE } from './../const';
+import { TActiveFilmData, TFilm, TFilms } from './../types/film';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/store';
 import { AxiosInstance, AxiosError } from 'axios';
-import { setFilms, redirectToRoute, setUserData, setAuthorizationStatus, setFilmsDataLoadingFailed, setFilmsDataLoadingStatus, setActiveFilmDataLoadingFailed, setActiveFilmDataLoadingStatus, setActiveFilm, addComment, setNewCommentLoadingStatus, setNewCommentLoadingFailed } from './action';
+import { redirectToRoute } from './action';
 import { TUserData } from '../types/user';
 import { saveToken } from '../services/token';
 import { TAuthData } from '../types/auth';
-import { TNewCommentData, TComments, TComment } from '../types/comment';
+import { TNewCommentRequestBody, TComments, TComment } from '../types/comment';
 
-export const fetchActiveFilmAction = createAsyncThunk<void, number, {
+export const fetchActiveFilmAction = createAsyncThunk<TActiveFilmData | null, number, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchActiveFilm',
   async (filmId, { dispatch, extra: api }) => {
-    dispatch(setActiveFilmDataLoadingFailed(false));
-    dispatch(setActiveFilmDataLoadingStatus(true));
+    const responces = await Promise.all([
+      api.get<TFilm>(`${ApiRoute.Films}/${filmId}`),
+      api.get<TFilms>(`${ApiRoute.Films}/${filmId}${ApiRoute.SimilarFilms}`),
+      api.get<TComments>(`${ApiRoute.FilmComments}/${filmId}`)
+    ]).catch((error: AxiosError) => {
+      const statusCode = error.response?.status;
 
-    try {
-      const { data: film } = await api.get<TFilm>(
-        `${ApiRoute.Films}/${filmId}`
-      );
-      const { data: similarFilms } = await api.get<TFilms>(
-        `${ApiRoute.Films}/${filmId}${ApiRoute.SimilarFilms}`
-      );
-      const { data: filmComments } = await api.get<TComments>(
-        `${ApiRoute.FilmComments}/${filmId}`
-      );
+      if(statusCode === NOT_FOUND_STATUS_CODE) {
+        dispatch(redirectToRoute(AppRoute.NotFound));
+      }
 
-      dispatch(setActiveFilm({
+      return error;
+    });
+
+    if(Array.isArray(responces)) {
+      const film: TFilm = responces[0].data;
+      const similarFilms: TFilms = responces[1].data;
+      const filmComments: TComments = responces[2].data;
+
+      return {
         film,
         similarFilms,
-        filmComments
-      }));
-    } catch (error) {
-      if(error) {
-        const statusCode = (error as AxiosError).response?.status;
-        if(statusCode === NOT_FOUND_STATUS_CODE) {
-          dispatch(redirectToRoute(AppRoute.NotFound));
-        }
-      }
+        filmComments,
+      };
     }
 
-    dispatch(setActiveFilmDataLoadingStatus(false));
+    return null;
   }
 );
 
-export const fetchFilmsAction = createAsyncThunk<void, undefined, {
+export const fetchFilmsAction = createAsyncThunk<TFilms, undefined, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'data/fetchFilms',
-  async (_arg, { dispatch, extra: api }) => {
-    dispatch(setFilmsDataLoadingFailed(false));
-    dispatch(setFilmsDataLoadingStatus(true));
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<TFilms>(ApiRoute.Films);
 
-    try {
-      const { data } = await api.get<TFilms>(ApiRoute.Films);
-
-      dispatch(setFilms(data));
-    } catch (error) {
-      dispatch(setFilmsDataLoadingFailed(true));
-    }
-
-    dispatch(setFilmsDataLoadingStatus(false));
+    return data;
   }
 );
 
-export const checkAuthAction = createAsyncThunk<void, undefined, {
+export const checkAuthAction = createAsyncThunk<TUserData, undefined, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'user/checkAuth',
-  async (_arg, { dispatch, extra: api }) => {
-    try {
-      const { data } = await api.get<TUserData>(ApiRoute.Login);
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<TUserData>(ApiRoute.Login);
 
-      dispatch(setUserData(data));
-      dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
-    } catch {
-      dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
-    }
-  },
+    return data;
+  }
 );
 
-export const loginAction = createAsyncThunk<void, TAuthData, {
+export const loginAction = createAsyncThunk<TUserData, TAuthData, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
@@ -100,33 +84,24 @@ export const loginAction = createAsyncThunk<void, TAuthData, {
     const { token } = data;
     saveToken(token);
 
-    dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
-    dispatch(setUserData(data));
     dispatch(redirectToRoute(AppRoute.Root));
+    return data;
   }
 );
 
-export const addCommentAction = createAsyncThunk<void, TNewCommentData, {
+export const addCommentAction = createAsyncThunk<TComment, TNewCommentRequestBody, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
   'user/login',
   async ({ comment, rating, filmId }, { dispatch, extra: api }) => {
-    try {
-      dispatch(setNewCommentLoadingFailed(false));
-      dispatch(setNewCommentLoadingStatus(true));
 
-      const { data } = await api.post<TComment>(`${ApiRoute.FilmComments}/${filmId}`, { comment, rating });
+    const { data } = await api.post<TComment>(`${ApiRoute.FilmComments}/${filmId}`, { comment, rating });
 
-      dispatch(addComment(data));
+    const redirectRoute = AppRoute.Films.replace(':id', String(filmId)).replace('/:tabName?', '');
+    dispatch(redirectToRoute((redirectRoute) as AppRoute));
 
-      const redirectRoute = AppRoute.Films.replace(':id', String(filmId)).replace('/:tabName?', '');
-      dispatch(redirectToRoute((redirectRoute) as AppRoute));
-    } catch (error) {
-      dispatch(setNewCommentLoadingFailed(true));
-    }
-
-    dispatch(setNewCommentLoadingStatus(false));
+    return data;
   }
 );

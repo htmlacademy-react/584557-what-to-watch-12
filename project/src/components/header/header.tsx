@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
 import { useAppSelector } from '../../hooks';
-import { selectAuthorizationStatus, selectUserData } from '../../store/selectors';
+import { selectAuthorizationStatus, selectUserData } from '../../store/user-data/selectors';
 import { Logo } from '../logo/logo';
 
 export const Header:FC<{

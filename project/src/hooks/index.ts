@@ -1,6 +1,6 @@
 import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import { AuthorizationStatus } from '../const';
-import { selectAuthorizationStatus } from '../store/selectors';
+import { selectAuthorizationStatus } from '../store/user-data/selectors';
 import type { State, AppDispatch } from '../types/store';
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();

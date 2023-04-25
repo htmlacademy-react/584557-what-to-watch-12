@@ -1,10 +1,11 @@
 import { FC } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { AddReviewForm, TAddReviewFormState } from '../../components/add-review-form/add-review-form';
+import { AddReviewForm } from '../../components/add-review-form/add-review-form';
 import { Header } from '../../components/header/header';
 import { AppRoute } from '../../const';
 import { useAppDispatch } from '../../hooks';
 import { addCommentAction } from '../../store/api-actions';
+import { TNewComment } from '../../types/comment';
 import { TFilms } from '../../types/film';
 
 const AddReview: FC<{ films: TFilms }> = ({ films }) => {
@@ -13,9 +14,8 @@ const AddReview: FC<{ films: TFilms }> = ({ films }) => {
   const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
 
-  const addNewComment = (newCommentData: TAddReviewFormState) => {
-    const { rating } = newCommentData;
-    const comment = newCommentData['review-text'];
+  const addNewComment = (newCommentData: TNewComment) => {
+    const { rating, comment } = newCommentData;
 
     if(id && rating) {
       const filmId = Number(id);

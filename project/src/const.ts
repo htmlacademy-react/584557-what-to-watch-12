@@ -44,3 +44,13 @@ export enum AuthorizationStatus {
 export const AUTH_TOKEN_KEY_NAME = 'WTW-token';
 
 export const NOT_FOUND_STATUS_CODE = 404;
+
+
+export enum NameSpace {
+  Films = 'films',
+  UserData = 'userData',
+  NewComment = 'newComment',
+  ActiveFilm = 'activeFilm'
+}
+
+export const DEFAULT_GENRE_FILTER = 'All genres';
