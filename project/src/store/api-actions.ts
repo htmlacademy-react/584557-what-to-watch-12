@@ -1,5 +1,5 @@
 import { ApiRoute, AppRoute, NOT_FOUND_STATUS_CODE } from './../const';
-import { TActiveFilmData, TFilm, TFilms } from './../types/film';
+import { TActiveFilmData, TFavoriteFilmChangeStatusData, TFilm, TFilms } from './../types/film';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AppDispatch, State } from '../types/store';
 import { AxiosInstance, AxiosError } from 'axios';
@@ -8,6 +8,7 @@ import { TUserData } from '../types/user';
 import { saveToken } from '../services/token';
 import { TAuthData } from '../types/auth';
 import { TNewCommentRequestBody, TComments, TComment } from '../types/comment';
+import { replaceFilmFavoriteStatus } from './films/films';
 
 export const fetchActiveFilmAction = createAsyncThunk<TActiveFilmData | null, number, {
   dispatch: AppDispatch;
@@ -54,6 +55,47 @@ export const fetchFilmsAction = createAsyncThunk<TFilms, undefined, {
   'data/fetchFilms',
   async (_arg, { extra: api }) => {
     const { data } = await api.get<TFilms>(ApiRoute.Films);
+
+    return data;
+  }
+);
+
+export const fetchFavoritesFilmsAction = createAsyncThunk<TFilms, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchFavoritesFilms',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<TFilms>(ApiRoute.FavoritesFilms);
+
+    return data;
+  }
+);
+
+export const fetchPromoFilmAction = createAsyncThunk<TFilm, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/fetchPromoFilm',
+  async (_arg, { extra: api }) => {
+    const { data } = await api.get<TFilm>(ApiRoute.PromoFilm);
+
+    return data;
+  }
+);
+
+export const changeFavoriteFilmStatusAction = createAsyncThunk<TFilm, TFavoriteFilmChangeStatusData, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'data/changeFavoriteFilmStatus',
+  async ({ status, filmId }, { dispatch, extra: api }) => {
+    const { data } = await api.post<TFilm>(`${ApiRoute.FavoritesFilms}/${filmId}/${status}`);
+
+    dispatch(replaceFilmFavoriteStatus(data));
 
     return data;
   }

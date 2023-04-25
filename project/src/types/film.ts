@@ -1,4 +1,6 @@
+import { FavoriteFilmChangeStatus } from '../const';
 import { TComments } from './comment';
+
 export type TFilm = {
   'name': string;
   'posterImage': string;
@@ -14,7 +16,7 @@ export type TFilm = {
   'genre': string;
   'released': number;
   'id': number;
-  'isFavorite': false;
+  'isFavorite': boolean;
   'videoLink': string;
   'previewVideoLink': string;
 }
@@ -25,4 +27,9 @@ export type TActiveFilmData = {
   film: TFilm;
   similarFilms: TFilms;
   filmComments: TComments;
+}
+
+export type TFavoriteFilmChangeStatusData = {
+  filmId: number;
+  status: FavoriteFilmChangeStatus;
 }

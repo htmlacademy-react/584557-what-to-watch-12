@@ -31,6 +31,8 @@ export const REQUEST_TIMEOUT = 5000;
 export enum ApiRoute {
   Films = '/films',
   SimilarFilms = '/similar',
+  FavoritesFilms= '/favorite',
+  PromoFilm= '/promo',
   FilmComments = '/comments',
   Login = '/login'
 }
@@ -50,7 +52,14 @@ export enum NameSpace {
   Films = 'films',
   UserData = 'userData',
   NewComment = 'newComment',
-  ActiveFilm = 'activeFilm'
+  ActiveFilm = 'activeFilm',
+  FavoritesFilms = 'favoritesFilms',
+  PromoFilm = 'promoFilm',
 }
 
 export const DEFAULT_GENRE_FILTER = 'All genres';
+
+export enum FavoriteFilmChangeStatus {
+  Favorite = 1,
+  Common = 0
+}

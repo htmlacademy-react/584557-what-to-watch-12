@@ -1,4 +1,4 @@
-import { TFilms } from './../../types/film';
+import { TFilm, TFilms } from './../../types/film';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DEFAULT_GENRE_FILTER, NameSpace } from '../../const';
 import { fetchFilmsAction } from '../api-actions';
@@ -23,6 +23,14 @@ const { reducer: filmsReducer, actions } = createSlice({
   reducers: {
     changeGenre: (state, action: PayloadAction<string>) => {
       state.activeGenre = action.payload;
+    },
+    replaceFilmFavoriteStatus: (state, action: PayloadAction<TFilm>) => {
+      const updatedFilm = action.payload;
+      const replacedFilmIdx = state.data.findIndex(({ id }) => id === updatedFilm.id);
+
+      if(replacedFilmIdx !== -1) {
+        state.data[replacedFilmIdx].isFavorite = updatedFilm.isFavorite;
+      }
     }
   },
   extraReducers(builder) {
@@ -35,12 +43,12 @@ const { reducer: filmsReducer, actions } = createSlice({
         state.isLoading = true;
         state.error = false;
       })
-      .addCase(fetchFilmsAction.rejected, (state, { payload }) => {
+      .addCase(fetchFilmsAction.rejected, (state) => {
         state.isLoading = false;
         state.error = true;
       });
   },
 });
 
-export const { changeGenre } = actions;
+export const { changeGenre, replaceFilmFavoriteStatus } = actions;
 export default filmsReducer;

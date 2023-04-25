@@ -30,4 +30,5 @@ export const selectGenres = createSelector(
 
       return acc;
     }, []))
-  ]);
+  ]
+);

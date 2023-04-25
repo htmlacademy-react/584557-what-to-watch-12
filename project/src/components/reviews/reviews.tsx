@@ -29,7 +29,7 @@ export const Reviews:FC<{ filmComments: TComments }> = ({ filmComments }) => {
           leftColumnComments.map((comment) => (<Review key={comment.id} review={comment} />))
         }
       </div>
-      {rightColumnComments.length && (
+      {Boolean(rightColumnComments.length) && (
         <div className="film-card__reviews-col">
           {
             rightColumnComments.map((comment) => (<Review key={comment.id} review={comment} />))

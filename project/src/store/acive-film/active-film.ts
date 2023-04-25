@@ -1,8 +1,9 @@
+import { TFilm } from './../../types/film';
 import { TComment } from '../../types/comment';
 import { TActiveFilmData } from '../../types/film';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { NameSpace } from '../../const';
-import { addCommentAction, fetchActiveFilmAction } from '../api-actions';
+import { addCommentAction, changeFavoriteFilmStatusAction, fetchActiveFilmAction } from '../api-actions';
 
 export type TActiveFilmState = {
   data: TActiveFilmData | null;
@@ -25,6 +26,11 @@ const { reducer: activeFilmReducer } = createSlice({
       .addCase(fetchActiveFilmAction.fulfilled, (state, action: PayloadAction<TActiveFilmData | null>) => {
         state.isLoading = false;
         state.data = action.payload;
+      })
+      .addCase(changeFavoriteFilmStatusAction.fulfilled, (state, action: PayloadAction<TFilm>) => {
+        if(state.data && state.data.film.id === action.payload.id) {
+          state.data.film.isFavorite = action.payload.isFavorite;
+        }
       })
       .addCase(addCommentAction.fulfilled, (state, action: PayloadAction<TComment> ) => {
         state.data?.filmComments.push(action.payload);
