@@ -7,7 +7,7 @@ import { Error } from '../../components/error/error';
 import { AppRoute, AuthorizationStatus, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { changeFavoriteFilmStatusAction, fetchActiveFilmAction, fetchFavoritesFilmsAction } from '../../store/api-actions';
-import { selectActiveFilm } from '../../store/acive-film/selectors';
+import { selectActiveFilm } from '../../store/active-film/selectors';
 import { Footer } from '../../components/footer/footer';
 import { FilmsList } from '../../components/films-list/films-list';
 import { selectAuthorizationStatus } from '../../store/user-data/selectors';

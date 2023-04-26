@@ -5,7 +5,7 @@ import { AppDispatch, State } from '../types/store';
 import { AxiosInstance, AxiosError } from 'axios';
 import { redirectToRoute } from './action';
 import { TUserData } from '../types/user';
-import { saveToken } from '../services/token';
+import { dropToken, saveToken } from '../services/token';
 import { TAuthData } from '../types/auth';
 import { TNewCommentRequestBody, TComments, TComment } from '../types/comment';
 import { replaceFilmFavoriteStatus } from './films/films';
@@ -131,12 +131,24 @@ export const loginAction = createAsyncThunk<TUserData, TAuthData, {
   }
 );
 
+export const logoutAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch;
+  state: State;
+  extra: AxiosInstance;
+}>(
+  'user/logout',
+  async (_arg, {dispatch, extra: api}) => {
+    await api.delete(ApiRoute.Logout);
+    dropToken();
+  },
+);
+
 export const addCommentAction = createAsyncThunk<TComment, TNewCommentRequestBody, {
   dispatch: AppDispatch;
   state: State;
   extra: AxiosInstance;
 }>(
-  'user/login',
+  'data/addComment',
   async ({ comment, rating, filmId }, { dispatch, extra: api }) => {
 
     const { data } = await api.post<TComment>(`${ApiRoute.FilmComments}/${filmId}`, { comment, rating });

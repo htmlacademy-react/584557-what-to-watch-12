@@ -6,7 +6,7 @@ import { Spinner } from '../../components/spinner/spinner';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Error } from '../../components/error/error';
 import { fetchActiveFilmAction } from '../../store/api-actions';
-import { selectActiveFilm } from '../../store/acive-film/selectors';
+import { selectActiveFilm } from '../../store/active-film/selectors';
 
 const Player = () => {
   const navigate = useNavigate();
