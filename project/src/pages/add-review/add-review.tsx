@@ -1,18 +1,24 @@
-import { FC } from 'react';
+import { useEffect } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { AddReviewForm } from '../../components/add-review-form/add-review-form';
 import { Header } from '../../components/header/header';
+import { Spinner } from '../../components/spinner/spinner';
+import { Error } from '../../components/error/error';
 import { AppRoute } from '../../const';
-import { useAppDispatch } from '../../hooks';
-import { addCommentAction } from '../../store/api-actions';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { selectActiveFilm } from '../../store/acive-film/selectors';
+import { addCommentAction, fetchActiveFilmAction } from '../../store/api-actions';
 import { TNewComment } from '../../types/comment';
-import { TFilms } from '../../types/film';
 
-const AddReview: FC<{ films: TFilms }> = ({ films }) => {
+const AddReview = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const film = films.find((filmsItem) => filmsItem.id === Number(id));
 
+  useEffect(() => {
+    dispatch(fetchActiveFilmAction(Number(id)));
+  }, [dispatch, id]);
+
+  const { data, isLoading, error } = useAppSelector(selectActiveFilm);
 
   const addNewComment = (newCommentData: TNewComment) => {
     const { rating, comment } = newCommentData;
@@ -23,11 +29,23 @@ const AddReview: FC<{ films: TFilms }> = ({ films }) => {
     }
   };
 
-  if(!id || !film) {
+  if(isLoading) {
+    return <Spinner/>;
+  }
+
+  if(error) {
+    return <Error/>;
+  }
+
+  if(data === null) {
+    return null;
+  }
+
+  if(!id || (!data && !isLoading)) {
     return <Navigate to={AppRoute.NotFound}/>;
   }
 
-  const { name, backgroundImage, posterImage, rating } = film;
+  const { name, backgroundImage, posterImage, rating } = data.film;
 
   return (
     <section className="film-card film-card--full">

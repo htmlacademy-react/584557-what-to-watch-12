@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import App from './components/app/app';
-import { promo } from './moks/promo';
 import { store } from './store';
 import { checkAuthAction } from './store/api-actions';
 
@@ -15,7 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App promo={promo} />
+      <App />
     </Provider>
   </React.StrictMode>
 );

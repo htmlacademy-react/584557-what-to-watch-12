@@ -7,18 +7,24 @@ import { Header } from '../../components/header/header';
 import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchFilmsAction } from '../../store/api-actions';
+import { changeFavoriteFilmStatusAction, fetchFavoritesFilmsAction, fetchFilmsAction, fetchPromoFilmAction } from '../../store/api-actions';
 import { selectFilmsByGenre, selectFilmsState } from '../../store/films/selectors';
-import { TFilm } from '../../types/film';
 import { ShowMore } from '../../components/show-more/show-more';
-import { MAX_FILMS_PER_PAGE } from '../../const';
+import { AuthorizationStatus, MAX_FILMS_PER_PAGE } from '../../const';
+import { FavoriteFilmBtn } from '../../components/favorite-film-btn/favorite-film-btn';
+import { selectAuthorizationStatus } from '../../store/user-data/selectors';
+import { selectFavoritesFilms } from '../../store/favorites-films/selectors';
+import { selectPromoFilm } from '../../store/promo-film/selectors';
 
-const Main:FC<{ promo: TFilm }> = ({ promo }) => {
+const Main:FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { isLoading, error, activeGenre } = useAppSelector(selectFilmsState);
+  const { isLoading: isFilmsLoading, error: isFilmsLoadingError, activeGenre } = useAppSelector(selectFilmsState);
+  const isAuthorize = useAppSelector(selectAuthorizationStatus) === AuthorizationStatus.Auth;
   const filteredFilms = useAppSelector(selectFilmsByGenre);
+  const { data: promoFilm, isLoading: isPromoFilmLoading, error: isPromoFilmLoadingError } = useAppSelector(selectPromoFilm);
+  const favoritesFilmsCount = useAppSelector(selectFavoritesFilms).length;
 
   const [filmsListPage, setFilmsListPage] = useState(1);
 
@@ -27,22 +33,40 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchFavoritesFilmsAction());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchPromoFilmAction());
+  }, [dispatch]);
+
+  useEffect(() => {
     setFilmsListPage(1);
   }, [activeGenre]);
 
   const filmsAmountForRender = filmsListPage * MAX_FILMS_PER_PAGE;
+  const isLoading = isFilmsLoading || isPromoFilmLoading;
+  const isError = isFilmsLoadingError || isPromoFilmLoadingError;
 
   if(isLoading) {
     return <Spinner/>;
   }
 
-  if(error) {
+  if(isError) {
     return <Error/>;
+  }
+
+  if(promoFilm === null) {
+    return null;
   }
 
   const isShowMoreBtnHidden = filteredFilms.length < filmsAmountForRender;
 
-  const { name, genre, released, posterImage, backgroundImage, id } = promo;
+  const { name, genre, released, posterImage, backgroundImage, id, isFavorite } = promoFilm;
+
+  const favoriteBntClickHandler = () => {
+    dispatch(changeFavoriteFilmStatusAction({ status: Number(!isFavorite), filmId: id }));
+  };
 
   return (
     <>
@@ -89,16 +113,8 @@ const Main:FC<{ promo: TFilm }> = ({ promo }) => {
                   </svg>
                   <span>Play</span>
                 </button>
-                <button
-                  className="btn btn--list film-card__button"
-                  type="button"
-                >
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+
+                { isAuthorize && <FavoriteFilmBtn onClick={favoriteBntClickHandler} isActive={isFavorite} counter={favoritesFilmsCount}/> }
               </div>
             </div>
           </div>

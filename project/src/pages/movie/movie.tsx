@@ -6,25 +6,32 @@ import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
 import { AppRoute, AuthorizationStatus, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchActiveFilmAction } from '../../store/api-actions';
+import { changeFavoriteFilmStatusAction, fetchActiveFilmAction, fetchFavoritesFilmsAction } from '../../store/api-actions';
 import { selectActiveFilm } from '../../store/acive-film/selectors';
 import { Footer } from '../../components/footer/footer';
 import { FilmsList } from '../../components/films-list/films-list';
 import { selectAuthorizationStatus } from '../../store/user-data/selectors';
+import { FavoriteFilmBtn } from '../../components/favorite-film-btn/favorite-film-btn';
+import { selectFavoritesFilms } from '../../store/favorites-films/selectors';
 
 const Movie = () => {
-  const dispath = useAppDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   const { id, tabName } = useParams<{ id: string; tabName: MovieTab }>();
 
   useEffect(() => {
-    dispath(fetchActiveFilmAction(Number(id)));
-  }, [dispath, id]);
+    dispatch(fetchActiveFilmAction(Number(id)));
+  }, [dispatch, id]);
+
+  useEffect(() => {
+    dispatch(fetchFavoritesFilmsAction());
+  }, [dispatch]);
 
   const { data, isLoading, error } = useAppSelector(selectActiveFilm);
   const isAuthorize = useAppSelector(selectAuthorizationStatus) === AuthorizationStatus.Auth;
+  const favoritesFilmsCount = useAppSelector(selectFavoritesFilms).length;
 
   if(isLoading) {
     return <Spinner/>;
@@ -43,8 +50,12 @@ const Movie = () => {
   }
 
   const { film, similarFilms, filmComments } = data;
-  const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor } = film;
+  const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor, id: filmId } = film;
   const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname}/review`;
+
+  const favoriteBntClickHandler = () => {
+    dispatch(changeFavoriteFilmStatusAction({ status: Number(!isFavorite), filmId }));
+  };
 
   return (
     <>
@@ -78,23 +89,21 @@ const Movie = () => {
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button">
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref={isFavorite ? '#in-list' : '#add'}></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+
                 {
                   isAuthorize && (
-                    <button
-                      onClick={() => {
-                        navigate(addReviewPagePath);
-                      }}
-                      className="btn film-card__button"
-                    >
+                    <>
+                      <FavoriteFilmBtn isActive={isFavorite} counter={favoritesFilmsCount} onClick={favoriteBntClickHandler} />
+
+                      <button
+                        onClick={() => {
+                          navigate(addReviewPagePath);
+                        }}
+                        className="btn film-card__button"
+                      >
                       Add review
-                    </button>
+                      </button>
+                    </>
                   )
                 }
               </div>
@@ -114,7 +123,7 @@ const Movie = () => {
       </section>
 
       {
-        similarFilms.length && (
+        Boolean(similarFilms.length) && (
           <div className="page-content">
             <section className="catalog catalog--like-this">
               <h2 className="catalog__title">More like this</h2>
