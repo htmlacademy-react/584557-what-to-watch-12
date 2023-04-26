@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { NameSpace } from '../const';
-import activeFilmReducer from './acive-film/active-film';
+import activeFilmReducer from './active-film/active-film';
 import favoritesFilmsReducer from './favorites-films/favorites-films';
 import filmsReducer from './films/films';
 import newCommentReducer from './new-comment/new-comment';

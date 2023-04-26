@@ -1,7 +1,8 @@
 import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { logoutAction } from '../../store/api-actions';
 import { selectAuthorizationStatus, selectUserData } from '../../store/user-data/selectors';
 import { Logo } from '../logo/logo';
 
@@ -9,8 +10,13 @@ export const Header:FC<{
   additionalClassName?: string;
   children?: ReactNode | undefined;
 }> = ({ additionalClassName, children }) => {
+  const dispatch = useAppDispatch();
   const isAuthorazed = AuthorizationStatus.Auth === useAppSelector(selectAuthorizationStatus);
   const avatarUrl = useAppSelector(selectUserData)?.avatarUrl;
+
+  const onLogoutLinkClick = () => {
+    dispatch(logoutAction());
+  };
 
   return (
     <header className={`page-header ${additionalClassName ?? ''}`}>
@@ -39,7 +45,7 @@ export const Header:FC<{
             </div>
           </li>
           <li className="user-block__item">
-            <Link to={AppRoute.Login} className="user-block__link">Sign out</Link>
+            <Link to={AppRoute.Login} onClick={onLogoutLinkClick} className="user-block__link">Sign out</Link>
           </li>
         </ul>
       )}

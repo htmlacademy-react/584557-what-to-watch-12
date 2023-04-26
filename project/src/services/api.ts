@@ -1,5 +1,5 @@
 import { getToken } from './token';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { BASE_SERVER_URL, REQUEST_TIMEOUT } from '../const';
 
 export const getApi = () => {
@@ -17,6 +17,13 @@ export const getApi = () => {
 
     return req;
   });
+
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    (error: AxiosError<{error: string}>) => {
+      throw error;
+    }
+  );
 
   return axiosInstance;
 };

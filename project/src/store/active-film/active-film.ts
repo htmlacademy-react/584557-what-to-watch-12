@@ -1,4 +1,4 @@
-import { TFilm } from './../../types/film';
+import { TFilm } from '../../types/film';
 import { TComment } from '../../types/comment';
 import { TActiveFilmData } from '../../types/film';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';

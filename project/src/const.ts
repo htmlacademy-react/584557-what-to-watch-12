@@ -34,7 +34,8 @@ export enum ApiRoute {
   FavoritesFilms= '/favorite',
   PromoFilm= '/promo',
   FilmComments = '/comments',
-  Login = '/login'
+  Login = '/login',
+  Logout = '/logout',
 }
 
 export enum AuthorizationStatus {

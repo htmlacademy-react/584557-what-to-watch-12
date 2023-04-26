@@ -6,7 +6,7 @@ import { Spinner } from '../../components/spinner/spinner';
 import { Error } from '../../components/error/error';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { selectActiveFilm } from '../../store/acive-film/selectors';
+import { selectActiveFilm } from '../../store/active-film/selectors';
 import { addCommentAction, fetchActiveFilmAction } from '../../store/api-actions';
 import { TNewComment } from '../../types/comment';
 

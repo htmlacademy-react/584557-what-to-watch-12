@@ -1,6 +1,6 @@
 import { createSlice, isFulfilled, isPending, isRejected } from '@reduxjs/toolkit';
 import { AuthorizationStatus, NameSpace } from '../../const';
-import { checkAuthAction, loginAction } from '../api-actions';
+import { checkAuthAction, loginAction, logoutAction } from '../api-actions';
 import { TUserData } from '../../types/user';
 
 export type TUserDataState = {
@@ -27,6 +27,10 @@ const { reducer: userDataReducer } = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder
+      .addCase(logoutAction.fulfilled, (state) => {
+        state.authorizationStatus = AuthorizationStatus.NoAuth;
+        state.data = null;
+      })
       .addMatcher(isFulfilledAction, (state, { payload }) => {
         state.authorizationStatus = AuthorizationStatus.Auth;
         state.data = payload;
