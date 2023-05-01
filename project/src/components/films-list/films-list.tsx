@@ -11,7 +11,7 @@ export const FilmsList: FC<{ films: TFilms; maxRenderedItems?: number }> = (
     : films;
 
   return (
-    <div className="catalog__films-list">
+    <div className="catalog__films-list" data-testid="films-list">
       {
         filmsToRender.map((film) => (
           <FilmCard

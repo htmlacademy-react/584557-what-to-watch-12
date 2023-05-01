@@ -23,7 +23,7 @@ export const Reviews:FC<{ filmComments: TComments }> = ({ filmComments }) => {
   const { leftColumnComments, rightColumnComments } = commentsColumns;
 
   return (
-    <div className="film-card__reviews film-card__row">
+    <div className="film-card__reviews film-card__row" data-testid="reviews">
       <div className="film-card__reviews-col">
         {
           leftColumnComments.map((comment) => (<Review key={comment.id} review={comment} />))

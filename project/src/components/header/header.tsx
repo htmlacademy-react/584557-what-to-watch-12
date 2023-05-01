@@ -14,12 +14,12 @@ export const Header:FC<{
   const isAuthorazed = AuthorizationStatus.Auth === useAppSelector(selectAuthorizationStatus);
   const avatarUrl = useAppSelector(selectUserData)?.avatarUrl;
 
-  const onLogoutLinkClick = () => {
+  const handleLogoutLinkClick = () => {
     dispatch(logoutAction());
   };
 
   return (
-    <header className={`page-header ${additionalClassName ?? ''}`}>
+    <header className={`page-header ${additionalClassName ?? ''}`} data-testid="header">
       <Logo />
 
       { children }
@@ -45,7 +45,7 @@ export const Header:FC<{
             </div>
           </li>
           <li className="user-block__item">
-            <Link to={AppRoute.Login} onClick={onLogoutLinkClick} className="user-block__link">Sign out</Link>
+            <Link to={AppRoute.Login} onClick={handleLogoutLinkClick} className="user-block__link">Sign out</Link>
           </li>
         </ul>
       )}

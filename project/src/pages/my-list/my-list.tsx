@@ -26,7 +26,7 @@ const MyList = () => {
   }
 
   return (
-    <div className="user-page">
+    <div className="user-page" data-testid="my-list-page">
       <Header additionalClassName='user-page__head'>
         <h1 className="page-title user-page__title">My list <span className="user-page__film-count">{favoritesFilms.length}</span></h1>
       </Header>
@@ -34,7 +34,7 @@ const MyList = () => {
       <section className="catalog">
         <h2 className="catalog__title visually-hidden">Catalog</h2>
 
-        {Boolean(favoritesFilms.length) && <h3>Nothing here!</h3>}
+        {!favoritesFilms.length && <h3>Nothing here!</h3>}
         {Boolean(favoritesFilms.length) && <FilmsList films={favoritesFilms} />}
       </section>
 

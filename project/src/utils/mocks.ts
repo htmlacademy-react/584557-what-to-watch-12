@@ -9,7 +9,7 @@ export const makeFakeFilmStub = (): TFilm => ({
   'posterImage': faker.image.abstract(),
   'previewImage': faker.image.abstract(),
   'backgroundImage': faker.image.abstract(),
-  'backgroundColor': faker.internet.color(),
+  'backgroundColor': 'rgb(16, 104, 53)',
   'description': faker.lorem.paragraph(),
   'rating': faker.datatype.float(0.1),
   'scoresCount': faker.datatype.number(),

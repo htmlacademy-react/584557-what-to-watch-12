@@ -39,22 +39,23 @@ const FilmCard:FC<TFilmCardProps> = ({ film, isActive, setActiveCardId }) => {
         setIsPlaying(false);
       }}
       className="small-film-card catalog__films-card"
+      data-testid="film-card"
     >
-      <div className="small-film-card__image">
-        {
-          (!isPlaying) &&
+      <Link to={`/films/${id}`} className="small-film-card__link">
+        <div className="small-film-card__image">
+          {
+            (!isPlaying) &&
             (<img src={previewImage} alt={name} width="280" height="175"/>)
-        }
-        {
-          (isPlaying) &&
+          }
+          {
+            (isPlaying) &&
             <VideoPlayer src={previewVideoLink}/>
-        }
-      </div>
-      <h3 className="small-film-card__title">
-        <Link to={`/films/${id}`} className="small-film-card__link">
+          }
+        </div>
+        <h3 className="small-film-card__title">
           {name}
-        </Link>
-      </h3>
+        </h3>
+      </Link>
     </article>
   );};
 

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 
 export const Footer = () => (
-  <footer className="page-footer">
+  <footer className="page-footer" data-testid="footer">
     <div className="logo">
       <Link to={AppRoute.Root} className="logo__link logo__link--light">
         <span className="logo__letter logo__letter--1">W</span>

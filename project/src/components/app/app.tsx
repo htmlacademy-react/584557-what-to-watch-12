@@ -7,40 +7,34 @@ import NotFound from '../../pages/not-found/not-found';
 import Player from '../../pages/player/player';
 import SignIn from '../../pages/sign-in/sign-in';
 import { AppRoute } from '../../const';
-import PrivateRoute from '../private-route/private-route';
-import ScrollToTop from '../scroll-to-top/scroll-to-top';
-import browserHistory from '../../browser-history';
-import HistoryRouter from '../history-route/history-route';
+import PrivateRoute from '../../hocs/private-route/private-route';
 
 const App = () => (
-  <HistoryRouter history={browserHistory}>
-    <ScrollToTop />
-    <Routes>
-      <Route path={AppRoute.Root}>
-        <Route index element={<Main />}/>
-        <Route path={AppRoute.Films} element={<Movie/>}/>
-        <Route
-          path={AppRoute.Rewiew}
-          element={
-            <PrivateRoute>
-              <AddReview />
-            </PrivateRoute>
-          }
-        />
-      </Route>
-      <Route path={AppRoute.Player} element={<Player />}/>
-      <Route path={AppRoute.Login} element={<SignIn />}/>
+  <Routes>
+    <Route path={AppRoute.Root}>
+      <Route index element={<Main />}/>
+      <Route path={AppRoute.Films} element={<Movie/>}/>
       <Route
-        path={AppRoute.MyList}
+        path={AppRoute.Rewiew}
         element={
           <PrivateRoute>
-            <MyList/>
+            <AddReview />
           </PrivateRoute>
         }
       />
-      <Route path='*' element={<NotFound/>}/>
-    </Routes>
-  </HistoryRouter>
+    </Route>
+    <Route path={AppRoute.Player} element={<Player />}/>
+    <Route path={AppRoute.Login} element={<SignIn />}/>
+    <Route
+      path={AppRoute.MyList}
+      element={
+        <PrivateRoute>
+          <MyList/>
+        </PrivateRoute>
+      }
+    />
+    <Route path='*' element={<NotFound/>}/>
+  </Routes>
 );
 
 export default App;

@@ -6,7 +6,7 @@ export const Details:FC<{ film: TFilm }> = ({ film }) => {
   const { director, starring, genre, released, runTime } = film;
 
   return (
-    <div className="film-card__text film-card__row">
+    <div className="film-card__text film-card__row" data-testid="details">
       <div className="film-card__text-col">
         <p className="film-card__details-item">
           <strong className="film-card__details-name">Director</strong>

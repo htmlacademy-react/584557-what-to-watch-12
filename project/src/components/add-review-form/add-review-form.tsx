@@ -9,10 +9,10 @@ export type TAddReviewFormState = { comment: string; rating: number | null }
 
 type TAddReviewFormProps = {
   rating: number;
-  onFormSubmit: (data: TNewComment) => void;
+  handleFormSubmit: (data: TNewComment) => void;
 }
 
-export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFormSubmit }) => {
+export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, handleFormSubmit }) => {
   const [state, setState] = useState<TAddReviewFormState>(
     {
       comment: '',
@@ -39,20 +39,23 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
         const { comment, rating: stateRating } = state;
 
         if(stateRating !== null) {
-          !isSubmitDisabled && onFormSubmit({ comment, rating: stateRating });
+          !isSubmitDisabled && handleFormSubmit({ comment, rating: Number(stateRating) });
         }
-      }}
-      onChange={(evt: ChangeEvent<HTMLFormElement>) => {
-        const { name, value } = evt.target;
-
-        setState((currentState) => ({
-          ...currentState,
-          [name]: value as string
-        }));
       }}
       className="add-review__form"
     >
-      <RatingStars isDisabled={isLoading} rating={rating} />
+      <RatingStars
+        isDisabled={isLoading}
+        rating={rating}
+        onChange={(evt: ChangeEvent<HTMLInputElement>) => {
+          const { name, value } = evt.target;
+
+          setState((currentState) => ({
+            ...currentState,
+            [name]: value
+          }));
+        }}
+      />
 
       <div className="add-review__text">
         <textarea
@@ -64,6 +67,14 @@ export const AddReviewForm:FC<TAddReviewFormProps> = ({ rating: initRating, onFo
           id="comment"
           placeholder="Review text"
           value={reviewText}
+          onChange={(evt: ChangeEvent<HTMLTextAreaElement>) => {
+            const { name, value } = evt.target;
+
+            setState((currentState) => ({
+              ...currentState,
+              [name]: value
+            }));
+          }}
           required
         >
         </textarea>

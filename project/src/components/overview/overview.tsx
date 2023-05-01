@@ -7,7 +7,7 @@ export const Overview:FC<{ film: TFilm }> = ({ film }) => {
 
   return (
     <>
-      <div className="film-rating">
+      <div className="film-rating" data-testid="overview">
         <div className="film-rating__score">{String(rating).replace('.', ',')}</div>
         <p className="film-rating__meta">
           <span className="film-rating__level">{getRaitingText(rating)}</span>

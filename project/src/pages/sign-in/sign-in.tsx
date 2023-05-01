@@ -10,7 +10,7 @@ const SignIn = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const onFormSubmit = (event: FormEvent) => {
+  const handleFormSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     if(emailRef.current && passwordRef.current) {
@@ -24,7 +24,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="user-page">
+    <div className="user-page" data-testid="sign-in">
       <header className="page-header user-page__head">
         <Logo/>
 
@@ -32,14 +32,14 @@ const SignIn = () => {
       </header>
 
       <div className="sign-in user-page__content">
-        <form onSubmit={onFormSubmit} action="#" className="sign-in__form">
+        <form onSubmit={handleFormSubmit} action="#" className="sign-in__form">
           <div className="sign-in__fields">
             <div className="sign-in__field">
-              <input ref={emailRef} className="sign-in__input" type="email" placeholder="Email address" name="user-email" id="user-email" />
+              <input ref={emailRef} className="sign-in__input" type="email" placeholder="Email address" name="user-email" id="user-email" required data-testid="email"/>
               <label className="sign-in__label visually-hidden" htmlFor="user-email">Email address</label>
             </div>
             <div className="sign-in__field">
-              <input ref={passwordRef} className="sign-in__input" type="password" placeholder="Password" name="user-password" id="user-password" />
+              <input ref={passwordRef} className="sign-in__input" type="password" placeholder="Password" name="user-password" id="user-password" required data-testid="password"/>
               <label className="sign-in__label visually-hidden" htmlFor="user-password">Password</label>
             </div>
           </div>

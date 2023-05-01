@@ -18,7 +18,7 @@ export const MovieTabs:FC<{ film: TFilm; activeTab: MovieTab; filmComments: TCom
   const TabComponent = tabsMap[activeTab] || Overview;
 
   return (
-    <div className="film-card__desc">
+    <div className="film-card__desc" data-testid="movie-tabs">
       <nav className="film-nav film-card__nav">
         <ul className="film-nav__list">
           {
