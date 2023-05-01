@@ -3,7 +3,6 @@ import { Link, Navigate, useParams } from 'react-router-dom';
 import { AddReviewForm } from '../../components/add-review-form/add-review-form';
 import { Header } from '../../components/header/header';
 import { Spinner } from '../../components/spinner/spinner';
-import { Error } from '../../components/error/error';
 import { AppRoute } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { selectActiveFilm } from '../../store/active-film/selectors';
@@ -34,21 +33,17 @@ const AddReview = () => {
   }
 
   if(error) {
-    return <Error/>;
+    return <Navigate to={AppRoute.NotFound}/>;
   }
 
   if(data === null) {
     return null;
   }
 
-  if(!id || (!data && !isLoading)) {
-    return <Navigate to={AppRoute.NotFound}/>;
-  }
-
   const { name, backgroundImage, posterImage, rating } = data.film;
 
   return (
-    <section className="film-card film-card--full">
+    <section className="film-card film-card--full" data-testid="add-review-page">
       <div className="film-card__header">
         <div className="film-card__bg">
           <img src={backgroundImage} alt={name} />
@@ -60,7 +55,7 @@ const AddReview = () => {
           <nav className="breadcrumbs">
             <ul className="breadcrumbs__list">
               <li className="breadcrumbs__item">
-                <Link to={`/films/${id}`} className="breadcrumbs__link">{name}</Link>
+                <Link to={`/films/${(id as string)}`} className="breadcrumbs__link">{name}</Link>
               </li>
 
               <li className="breadcrumbs__item">
@@ -76,9 +71,10 @@ const AddReview = () => {
       </div>
 
       <div className="add-review">
-        <AddReviewForm rating={rating} onFormSubmit={addNewComment}/>
+        <AddReviewForm rating={rating} handleFormSubmit={addNewComment}/>
       </div>
     </section>
-  );};
+  );
+};
 
 export default AddReview;

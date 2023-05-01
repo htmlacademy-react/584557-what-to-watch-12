@@ -64,7 +64,7 @@ const Main:FC = () => {
 
   const { name, genre, released, posterImage, backgroundImage, id, isFavorite } = promoFilm;
 
-  const favoriteBntClickHandler = () => {
+  const handlefavoriteBntClick = () => {
     dispatch(changeFavoriteFilmStatusAction({ status: Number(!isFavorite), filmId: id }));
   };
 
@@ -114,7 +114,7 @@ const Main:FC = () => {
                   <span>Play</span>
                 </button>
 
-                { isAuthorize && <FavoriteFilmBtn onClick={favoriteBntClickHandler} isActive={isFavorite} counter={favoritesFilmsCount}/> }
+                { isAuthorize && <FavoriteFilmBtn handleClick={handlefavoriteBntClick} isActive={isFavorite} counter={favoritesFilmsCount}/> }
               </div>
             </div>
           </div>
@@ -122,13 +122,13 @@ const Main:FC = () => {
       </section>
 
       <div className="page-content">
-        <section className="catalog">
+        <section className="catalog" data-testid="main-page">
           <h2 className="catalog__title visually-hidden">Catalog</h2>
 
           <GenresList />
 
           <FilmsList films={filteredFilms} maxRenderedItems={filmsAmountForRender} />
-          {!isShowMoreBtnHidden && <ShowMore onClick={() => setFilmsListPage((s) => s + 1)}/>}
+          {!isShowMoreBtnHidden && <ShowMore handleClick={() => setFilmsListPage((s) => s + 1)}/>}
         </section>
 
         <Footer />

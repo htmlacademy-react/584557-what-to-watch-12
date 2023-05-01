@@ -10,9 +10,9 @@ export const GenresList = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <ul className="catalog__genres-list">
+    <ul className="catalog__genres-list" data-testid="genres-list">
       {genres.map((genresItem) => (
-        <li key={genresItem} className={`catalog__genres-item ${ genresItem === activeGenre ? 'catalog__genres-item--active' : ''}`}>
+        <li data-testid="genres-list-item" key={genresItem} className={`catalog__genres-item ${ genresItem === activeGenre ? 'catalog__genres-item--active' : ''}`}>
           <Link
             onClick={(evt) => {
               evt.preventDefault();

@@ -4,7 +4,6 @@ import { AppRoute } from '../../const';
 import { fromSecToFilmDuration } from '../../utils/date-time-formatters';
 import { Spinner } from '../../components/spinner/spinner';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { Error } from '../../components/error/error';
 import { fetchActiveFilmAction } from '../../store/api-actions';
 import { selectActiveFilm } from '../../store/active-film/selectors';
 
@@ -25,39 +24,60 @@ const Player = () => {
   const [playerState, setPlayerState] = useState({
     isPlaying: false,
     currentTime: 0,
+    isFullscreen: false,
     loading: false,
     error: false
   });
 
-  const { isPlaying, loading, error: videoLoadError, currentTime } = playerState;
+  const { isPlaying, loading, error: videoLoadError, currentTime, isFullscreen } = playerState;
 
   if(isLoading) {
     return <Spinner/>;
   }
 
   if(error) {
-    return <Error/>;
+    <Navigate to={AppRoute.NotFound}/>;
   }
 
   if(data === null) {
     return null;
   }
 
-  if(!id || (!data && !isLoading)) {
-    return <Navigate to={AppRoute.NotFound}/>;
-  }
+  const turnOffFullScreen = () => {
+    document.exitFullscreen();
+    setPlayerState((state) => ({
+      ...state,
+      isFullscreen: false
+    }));
+  };
 
-  const onFullScreenBtnClick = () => {
+  const setFullScreen = () => {
     if(wrapperRef.current) {
-      if (!document.fullscreenElement) {
-        wrapperRef.current.requestFullscreen();
+      wrapperRef.current.requestFullscreen();
+      setPlayerState((state) => ({
+        ...state,
+        isFullscreen: true
+      }));
+    }
+  };
+
+  const handleFullScreenBtnClick = () => {
+    if(wrapperRef.current) {
+      if(document.fullscreenElement === undefined) {
+        if(isFullscreen) {
+          turnOffFullScreen();
+        } else {
+          setFullScreen();
+        }
+      } else if (document.fullscreenElement === null) {
+        setFullScreen();
       } else {
-        document.exitFullscreen();
+        turnOffFullScreen();
       }
     }
   };
 
-  const onPlayBtnClick = () => {
+  const handlePlayBtnClick = () => {
     if(videoRef.current) {
       if(isPlaying) {
         videoRef.current.pause();
@@ -67,44 +87,51 @@ const Player = () => {
     }
   };
 
-  const onVideoLoadStart = () => {
+  const handleVideoLoadStart = () => {
     setPlayerState((state) => ({
       ...state,
       loading: true
     }));
   };
 
-  const onVideoPlay = () => {
+  const handleVideoPlay = () => {
     setPlayerState((state) => ({
       ...state,
       isPlaying: true
     }));
   };
 
-  const onVideoPaused = () => {
+  const handleVideoPaused = () => {
     setPlayerState((state) => ({
       ...state,
       isPlaying: false
     }));
   };
 
-  const onVideoCanPlay = () => {
+  const handleVideoCanPlay = () => {
     setPlayerState((state) => ({
       ...state,
       loading: false
     }));
 
-    videoRef.current?.play();
+    playerState.isPlaying && videoRef.current?.play();
   };
 
-  const onVideoEror = () => {
+  const handleVideoWaiting = () => {
+    setPlayerState((state) => ({
+      ...state,
+      loading: true
+    }));
+  };
+
+  const handleVideoEror = () => {
     setPlayerState((state) => ({
       ...state,
       error: true
     }));
   };
 
-  const onVideoTimeUpdate = () => {
+  const handleVideoTimeUpdate = () => {
     if(videoRef.current && videoRef.current.currentTime) {
       if(videoRef.current.currentTime !== currentTime){
         setPlayerState((state) => ({
@@ -119,15 +146,34 @@ const Player = () => {
   const progress = Math.round((currentTime / runTime) * 100);
 
   return (
-    <div className="player" ref={wrapperRef}>
+    <div className="player" ref={wrapperRef} data-testid="player-page">
       { videoLoadError && <h2>Video Load Error!</h2> }
-      { loading && <h2>Spinner time!</h2> }
+      { loading && (
+        <svg className="spinner" viewBox="0 0 50 50" data-testid="animated-spinner">
+          <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+        </svg>
+      ) }
 
-      <video onTimeUpdate={onVideoTimeUpdate} onLoadStart={onVideoLoadStart} onError={onVideoEror} onCanPlay={onVideoCanPlay} onPlay={onVideoPlay} onPause={onVideoPaused} ref={videoRef} src={videoLink} className="player__video" poster={backgroundImage} muted/>
+      <video
+        data-testid="video"
+        onWaiting={handleVideoWaiting}
+        onTimeUpdate={handleVideoTimeUpdate}
+        onLoadStart={handleVideoLoadStart}
+        onError={handleVideoEror}
+        onCanPlay={handleVideoCanPlay}
+        onPlay={handleVideoPlay}
+        onPause={handleVideoPaused}
+        ref={videoRef}
+        src={videoLink}
+        className="player__video"
+        poster={backgroundImage}
+        autoPlay
+        muted
+      />
 
       <button
         onClick={() => {
-          navigate(-1);
+          navigate(`/${AppRoute.Films}`.replace(':id', String(id)).replace(':tabName', ''));
         }}
         type="button"
         className="player__exit"
@@ -145,7 +191,7 @@ const Player = () => {
         </div>
 
         <div className="player__controls-row">
-          <button onClick={onPlayBtnClick} type="button" className="player__play">
+          <button onClick={handlePlayBtnClick} type="button" className="player__play" data-testid="play-btn">
             <svg viewBox="0 0 19 19" width="19" height="19">
               <use xlinkHref={isPlaying ? '#pause' : '#play-s'}></use>
             </svg>
@@ -153,11 +199,11 @@ const Player = () => {
           </button>
           <div className="player__name">{name}</div>
 
-          <button onClick={onFullScreenBtnClick} type="button" className="player__full-screen">
+          <button onClick={handleFullScreenBtnClick} type="button" className="player__full-screen" data-testid="full-screen-btn">
             <svg viewBox="0 0 27 27" width="27" height="27">
               <use xlinkHref="#full-screen"></use>
             </svg>
-            <span>Full screen</span>
+            <span>{isFullscreen ? 'Turn off fullscreen mode' : 'Full screen'}</span>
           </button>
         </div>
       </div>

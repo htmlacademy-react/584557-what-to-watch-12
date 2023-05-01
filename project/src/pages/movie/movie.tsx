@@ -3,7 +3,6 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { Header } from '../../components/header/header';
 import { MovieTabs } from '../../components/movie-tabs/movie-tabs';
 import { Spinner } from '../../components/spinner/spinner';
-import { Error } from '../../components/error/error';
 import { AppRoute, AuthorizationStatus, MAX_RELATED_MOVIES_LIST_LENGTH, MovieTab } from '../../const';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { changeFavoriteFilmStatusAction, fetchActiveFilmAction, fetchFavoritesFilmsAction } from '../../store/api-actions';
@@ -38,28 +37,24 @@ const Movie = () => {
   }
 
   if(error) {
-    return <Error/>;
+    return <Navigate to={AppRoute.NotFound}/>;
   }
 
   if(data === null) {
     return null;
   }
 
-  if(!id || (!data && !isLoading)) {
-    return <Navigate to={AppRoute.NotFound}/>;
-  }
-
   const { film, similarFilms, filmComments } = data;
   const { backgroundImage, name, genre, posterImage, released, isFavorite, backgroundColor, id: filmId } = film;
   const addReviewPagePath = tabName ? `${pathname.replace(`/${tabName}`, '')}/review` : `${pathname}/review`;
 
-  const favoriteBntClickHandler = () => {
+  const handleFavoriteBntClick = () => {
     dispatch(changeFavoriteFilmStatusAction({ status: Number(!isFavorite), filmId }));
   };
 
   return (
     <>
-      <section className="film-card film-card--full" style={{backgroundColor: backgroundColor}}>
+      <section className="film-card film-card--full" style={{backgroundColor: backgroundColor}} data-testid="movie-page">
         <div className="film-card__hero">
           <div className="film-card__bg">
             <img src={backgroundImage} alt={name} />
@@ -80,7 +75,7 @@ const Movie = () => {
               <div className="film-card__buttons">
                 <button
                   onClick={() => {
-                    navigate(`/player/${id}`);
+                    navigate(`/player/${(id as string)}`);
                   }}
                   className="btn btn--play film-card__button" type="button"
                 >
@@ -93,7 +88,7 @@ const Movie = () => {
                 {
                   isAuthorize && (
                     <>
-                      <FavoriteFilmBtn isActive={isFavorite} counter={favoritesFilmsCount} onClick={favoriteBntClickHandler} />
+                      <FavoriteFilmBtn isActive={isFavorite} counter={favoritesFilmsCount} handleClick={handleFavoriteBntClick} />
 
                       <button
                         onClick={() => {

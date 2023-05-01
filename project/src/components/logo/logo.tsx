@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 
 export const Logo = () => (
-  <div className="logo">
+  <div className="logo" data-testid="logo">
     <Link to={AppRoute.Root} className="logo__link">
       <span className="logo__letter logo__letter--1">W</span>
       <span className="logo__letter logo__letter--2">T</span>
